@@ -14,7 +14,7 @@ class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     author = db.Column(db.String(100), nullable=False)
-    price = db.Column(db.Float)
+    price = db.Column(db.Float) #string
 
     def __init__(self, title, author, price):
         self.title = title
@@ -27,6 +27,12 @@ def index():
     books = Book.query.all()
     return render_template('index.html', books=books)
 
+############
+@app.route('/show_books')
+def show_books():
+    books = Book.query.all()
+    return render_template('show_books.html', books=books)
+###########
 
 @app.route('/add/', methods =['POST'])
 def insert_book():

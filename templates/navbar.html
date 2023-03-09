@@ -3,21 +3,90 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
     <a class="navbar-brand" href="">
-      <h1>Expense Management Tool</h1>
+      <h1 style="margin-bottom: 30px;">Book Exchange Club</h1>
     </a>
     <ul class="navbar-nav">
       <li class="nav-item">
       </li>
     </ul>
   </div>
-
+  <div id="main" class="container">
+   <span style="font-size:30px;cursor:pointer; margin-top: 50px; margin-left: -700px;" onclick="openNav()" >&#9776; Menu</span>
+</div>
 </nav>
 
+<div id="mySidenav" class="sidenav">
+   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+   <a href="#">Profile</a>
+   <a href="#">Add book</a>
+   <a href="/templates/show_books.html">Show all books</a>
+   <a href="#">Log out</a>
+ </div>
 
+ <script>
+   function openNav() {
+     document.getElementById("mySidenav").style.width = "250px";
+     document.getElementById("main").style.marginLeft = "250px";
+   }
+   
+   function closeNav() {
+     document.getElementById("mySidenav").style.width = "0";
+     document.getElementById("main").style.marginLeft= "0";
+   }
+   </script>
 
+<style>
+   body {
+     font-family: "Lato", sans-serif;
+   }
+   
+   .sidenav {
+     height: 100%;
+     width: 0;
+     position: fixed;
+     z-index: 1;
+     top: 0;
+     left: 0;
+     background-color: #111;
+     overflow-x: hidden;
+     transition: 0.5s;
+     padding-top: 60px;
+   }
+   
+   .sidenav a {
+     padding: 8px 8px 8px 32px;
+     text-decoration: none;
+     font-size: 25px;
+     color: #818181;
+     display: block;
+     transition: 0.3s;
+   }
+   
+   .sidenav a:hover {
+     color: #f1f1f1;
+   }
+   
+   .sidenav .closebtn {
+     position: absolute;
+     top: 0;
+     right: 25px;
+     font-size: 36px;
+     margin-left: 50px;
+   }
+   
+   #main {
+     transition: margin-left .5s;
+     padding: 16px;
+   }
+   
+   @media screen and (max-height: 450px) {
+     .sidenav {padding-top: 15px;}
+     .sidenav a {font-size: 18px;}
+   }
+   </style>
 
 <!-- Modal  for inserting the book -->
-<div id="insert_modal" class="modal fade" role="dialog">
+<!-- <div id="insert_modal" class="modal fade" role="dialog">
    <div class="modal-dialog">
       <div class="modal-content">
          <div class="modal-header">
@@ -29,13 +98,13 @@
 
 
                <div class="form-group">
-                  <label>Vendor</label>
+                  <label>Book Title</label>
                   <input type="text" class="form-control" name="title" required="1">
                </div>
 
 
                 <div class="form-group">
-                  <label>Date</label>
+                  <label>Author</label>
                   <input type="text" class="form-control" name="author" required="1">
                </div>
 
@@ -45,16 +114,10 @@
                </div>
 
                <div class="form-group">
-                  <button class="btn btn-primary mt-4" type="submit">Add Expense</button>
+                  <button class="btn btn-primary mt-4" type="submit">Add Book</button>
                </div>
-
-
             </form>
-
-
          </div>
-
-
          <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
@@ -63,4 +126,4 @@
       </div>
    </div>
 
-</div>
+</div> -->
