@@ -1,51 +1,157 @@
 
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container">
-    <a class="navbar-brand" href="">
-      <h1>Expense Management Tool</h1>
-    </a>
-    <ul class="navbar-nav">
-      <li class="nav-item">
-      </li>
-    </ul>
-  </div>
-
-</nav>
-
-
-
-
-<!-- Modal  for inserting the book -->
-<div id="insert_modal" class="modal fade" role="dialog">
+   <div class="container">
+     <a class="navbar-brand" href="">
+       <!-- <img src="{{url_for('static', filename='flask.png')}}" width="100" height="50" class="d-inline-block align-text-top"> -->
+     </a>
+     <ul class="navbar-nav">
+       <li class="nav-item">
+       <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#signup_modal">Sign Up</button>
+       <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#login_modal">Login</button>
+       <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#logout_modal" href="{{url_for('logout')}}">Logout</button>
+       <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</button>
+       </li>
+     </ul>
+   </div>
+ 
+ </nav>
+ 
+ <!-- Modal  for inserting the book -->
+ <div id="insert_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h4 class="modal-title">Add Book</h4>
+          </div>
+          <div class="modal-body">
+ 
+             <form action="{{url_for('insert_book')}}" method="POST">
+ 
+ 
+                <div class="form-group">
+                   <label>Title:</label>
+                   <input type="text" class="form-control" name="title" required="1">
+                </div>
+ 
+ 
+                 <div class="form-group">
+                   <label>Author:</label>
+                   <input type="text" class="form-control" name="author" required="1">
+                </div>
+ 
+                  <div class="form-group">
+                   <label>Price:</label>
+                   <input type="number" class="form-control" name="price" required="1">
+                </div>
+ 
+                <div class="form-group">
+                   <button class="btn btn-primary mt-4" type="submit">Add Book</button>
+                </div>
+ 
+ 
+             </form>
+ 
+ 
+          </div>
+ 
+ 
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+ 
+          </div>
+ 
+       </div>
+    </div>
+ 
+ </div>
+ 
+<!-- Modal for Signing Up -->
+ <div id="signup_modal" class="modal fade" role="dialog">
    <div class="modal-dialog">
       <div class="modal-content">
          <div class="modal-header">
-            <h4 class="modal-title">Add Book</h4>
+            <h4 class="modal-title">Sign Up</h4>
          </div>
          <div class="modal-body">
 
-            <form action="{{url_for('insert_book')}}" method="POST">
+            <form action="{{url_for('register')}}" method="POST">
 
 
                <div class="form-group">
-                  <label>Vendor</label>
-                  <input type="text" class="form-control" name="title" required="1">
+                  <label>Username:</label>
+                  <input id="username" type="text" class="form-control" name="username" required="1">
                </div>
 
 
                 <div class="form-group">
-                  <label>Date</label>
-                  <input type="text" class="form-control" name="author" required="1">
+                  <label>Email:</label>
+                  <input id="email" type="email" class="form-control" name="email" required="1">
                </div>
 
                  <div class="form-group">
-                  <label>Bill</label>
-                  <input type="number" class="form-control" name="price" required="1">
+                  <label>Password:</label>
+                  <input id="password" type="password" class="form-control" name="password" required="1">
                </div>
+               <b></b>
 
                <div class="form-group">
-                  <button class="btn btn-primary mt-4" type="submit">Add Expense</button>
+                   <label>Would you like to participate in the Book Club?</label>
+                   <select id="participation" name="participation" class="form-control" required="1">
+                       <option value="yes">Yes</option>
+                       <option value="no">No</option>
+                   </select>
+                </div>
+
+               <div class="form-group">
+                  <button class="btn btn-primary mt-4" type="submit">Register</button>
+               </div>
+
+
+            </form>
+
+
+         </div>
+
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+         </div>
+
+      </div>
+   </div>
+
+</div>
+
+
+<!-- Modal for Logging In -->
+<div id="login_modal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Login</h4>
+         </div>
+         <div class="modal-body">
+
+            <form action="{{url_for('login')}}" method="POST">
+
+
+               <div class="form-group">
+                  <label>Username:</label>
+                  <input id="username" type="text" class="form-control" name="username" required="1">
+               </div>
+
+
+                 <div class="form-group">
+                  <label>Password:</label>
+                  <input id="password" type="password" class="form-control" name="password" required="1">
+               </div>
+               <b></b>
+
+
+               <div class="form-group">
+                  <button class="btn btn-primary mt-4" type="submit">Login</button>
                </div>
 
 
