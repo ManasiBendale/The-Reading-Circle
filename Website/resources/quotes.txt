@@ -1,0 +1,27 @@
+    <ul>
+		<li class="=hidden">"The more that you read, the more things you will know. The more that you learn, the more places you'll go." - Dr. Seuss</li>
+		<li>"Once you learn to read, you will be forever free." - Frederick Douglass</li>
+		<li>"Reading is to the mind what exercise is to the body." - Joseph Addison</li>
+		<li>"A reader lives a thousand lives before he dies, said Jojen. The man who never reads lives only one." - George R.R. Martin</li>
+		<li>"The man who does not read good books has no advantage over the man who cannot read them." - Mark Twain</li>
+		<li>"The reading of all good books is like a conversation with the finest minds of past centuries." - Rene Descartes</li>
+		<li>"Reading is a discount ticket to everywhere." - Mary Schmich</li>
+		<li>"I have always imagined that Paradise will be a kind of library." - Jorge Luis Borges</li>
+		<li>"The greatest gift is a passion for reading." - Elizabeth Hardwick</li>
+		<li>"The ability to read awoke inside me some long dormant craving to be mentally alive." - Malcolm X</li>
+		<li>"Books are a uniquely portable magic." - Stephen King</li>
+		<li>"We read to know we're not alone." - William Nicholson</li>
+		<li>"Reading is a basic tool in the living of a good life." - Mortimer J. Adler</li>
+		<li>"A book is a dream that you hold in your hand." - Neil Gaiman</li>
+		<li>"One must always be careful of books and what is inside them, for words have the power to change us." - Cassandra Clare</li>
+		<li>"Books can be dangerous. The best ones should be labeled 'This could change your life'." - Helen Exley</li>
+		<li>"Reading is a means of thinking with another person's mind; it forces you to stretch your own." - Charles Scribner Jr.</li>
+		<li>"You don't have to burn books to destroy a culture. Just get people to stop reading them." - Ray Bradbury</li>
+		<li>"Reading is an exercise in empathy; an exercise in walking in someone else's shoes for a while." - Malorie Blackman</li>
+		<li>"Reading is the sole means by which we slip, involuntarily, often helplessly, into another's skin, another's voice, another's soul." - Joyce Carol Oates</li>
+		<li>"No entertainment is so cheap as reading, nor any pleasure so lasting." - Mary Wortley Montagu</li>
+		<li>"A room without books is like a body without a soul." - Cicero</li>
+		<li>"I cannot remember the books I've read any more than the meals I have eaten; even so, they have made me." - Ralph Waldo Emerson</li>
+		<li>"Reading is everything. Reading makes me feel like I've accomplished something, learned something, become a better person." - Nora Ephron</li>
+        <li>“Literacy is a bridge from misery to hope.” -Kofi Annan</li>
+	</ul>

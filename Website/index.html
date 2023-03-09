@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.container {
+  position: relative;
+  font-family: Arial;
+}
+
+.text-block {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: black;
+  color: white;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+</style>
+</head>
+<body>
+    <ul>
+		<li>"The best way to predict your future is to create it." - Abraham Lincoln</li>
+		<li>"If you want to live a happy life, tie it to a goal, not to people or things." - Albert Einstein</li>
+		<li>"The only way to do great work is to love what you do." - Steve Jobs</li>
+		<li>"Success is not final, failure is not fatal: it is the courage to continue that counts." - Winston Churchill</li>
+		<li>"Believe you can and you're halfway there." - Theodore Roosevelt</li>
+	</ul>
+<div class="container">
+  <img src="resources/lib.jpeg" alt="Nature" style="width:100%;">
+  <div class="text-block">
+    <h4>Books</h4>
+
+	<script>
+		// Get all the quotes as an array
+		var quotes = document.getElementsByTagName('li');
+		// Generate a random index
+		var randomIndex = Math.floor(Math.random() * quotes.length);
+		// Get the quote at the random index and display it
+		var randomQuote = quotes[randomIndex].textContent;
+		document.write(randomQuote);
+	</script>
+  </div>
+</div>
+
+</body>
+</html> 
