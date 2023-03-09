@@ -15,18 +15,14 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#signup_modal" st>Signup</button>
 
-<div class="form-group">
-                  <button class="btn btn-primary mt-4" type="submit">March 2023</button>
-               </div>
         <table class="table table-success table-striped table-hover" border="1">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Vendor</th>
-                    <th>Date</th>
-                    <th>Bill</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Price</th>
                      <th colspan="2">Actions</th>
                 </tr>
             </thead>
@@ -49,7 +45,7 @@
    <div class="modal-dialog">
       <div class="modal-content">
          <div class="modal-header">
-            <h4 class="modal-title">Update Expense</h4>
+            <h4 class="modal-title">Update Book</h4>
          </div>
          <div class="modal-body">
 
@@ -58,7 +54,7 @@
 
                <div class="form-group">
 
-                  <label>Vendor</label>
+                  <label>Title:</label>
 		           <input type="hidden"  name="id" value="{{book.id}}">
                   <input type="text" class="form-control" name="title" value="{{book.title}}" >
 
@@ -67,17 +63,17 @@
 
 
                 <div class="form-group">
-                  <label>Date</label>
+                  <label>Author:</label>
                   <input type="text" class="form-control" name="author" value="{{book.author}}">
                </div>
 
                  <div class="form-group">
-                  <label>Bill</label>
+                  <label>Price:</label>
                   <input type="number" class="form-control" name="price" value="{{book.price}}">
                </div>
 
                <div class="form-group">
-                  <button class="btn btn-primary mt-4" type="submit">Update Expense</button>
+                  <button class="btn btn-primary mt-4" type="submit">Update Book</button>
                </div>
 
 
@@ -107,55 +103,5 @@
             </tbody>
         </table>
     </div>
-
-<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal" st>Add Expense</button>
-<div id="insert_modal" class="modal fade" role="dialog">
-   <div class="modal-dialog">
-      <div class="modal-content">
-         <div class="modal-header">
-            <h4 class="modal-title">Add Book</h4>
-         </div>
-         <div class="modal-body">
-
-            <form action="{{url_for('insert_book')}}" method="POST">
-
-
-               <div class="form-group">
-                  <label>Vendor</label>
-                  <input type="text" class="form-control" name="title" required="1">
-               </div>
-
-
-                <div class="form-group">
-                  <label>Date</label>
-                  <input type="text" class="form-control" name="author" required="1">
-               </div>
-
-                 <div class="form-group">
-                  <label>Bill</label>
-                  <input type="number" class="form-control" name="price" required="1">
-               </div>
-
-               <div class="form-group">
-                  <button class="btn btn-primary mt-4" type="submit">Add Expense</button>
-               </div>
-
-
-            </form>
-
-
-         </div>
-
-
-         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-         </div>
-
-      </div>
-   </div>
-
-</div>
-
 
 {% endblock %}
