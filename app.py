@@ -11,13 +11,13 @@ app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'signup'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/flaskaws'
+app.config['MYSQL_DB'] = 'newdata'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/newdata'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "somethingunique"
 
-engine = create_engine('mysql://root:''@localhost/flaskaws')
-connection = engine.raw_connection()
+# engine = create_engine('mysql://root:''@localhost/flaskaws')
+# connection = engine.raw_connection()
 # cursor = connection.cursor()
 db = SQLAlchemy(app)
 mysql = MySQL(app)
@@ -51,6 +51,12 @@ class User(db.Model):
 
 
 @app.route('/')
+@app.route('/main')
+def main():
+    # books = Book.query.all()
+    return render_template('main.html')
+
+
 @app.route('/index')
 def index():
     books = Book.query.all()
@@ -75,7 +81,7 @@ def login():
             return render_template('index.html', msg=msg)
         else:
             msg = 'Incorrect username / password !'
-    return render_template('login.html', msg=msg)
+    return render_template('index.html', msg=msg)
 
     # msg = ''
     # if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
@@ -106,7 +112,7 @@ def logout():
     session.pop('id', None)
     session.pop('username', None)
     flash("User logged out successfully")
-    return redirect(url_for('index'))
+    return redirect(url_for('main'))
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -136,7 +142,7 @@ def register():
             msg = 'You have successfully registered !'
     elif request.method == 'POST':
         msg = 'Please fill out the form !'
-    return render_template('register.html', msg=msg)
+    return render_template('index.html', msg=msg)
 
     # msg = ''
     # if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'participation' in request.form:
