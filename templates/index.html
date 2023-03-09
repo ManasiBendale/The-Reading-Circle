@@ -5,6 +5,14 @@
 
 
 {% block body %}
+<h1>
+    Hi {{session.username}}!!</br></br> Welcome to the index page...
+
+</h1></br></br></br>
+<a href="{{ url_for('logout') }}" class="btn">Logout</a>
+<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</button>
+
+
     <div class="container mt-4">
         {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -103,5 +111,54 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Modal  for inserting the book -->
+ <div id="insert_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h4 class="modal-title">Add Book</h4>
+          </div>
+          <div class="modal-body">
+ 
+             <form action="{{url_for('insert_book')}}" method="POST">
+ 
+ 
+                <div class="form-group">
+                   <label>Title:</label>
+                   <input type="text" class="form-control" name="title" required="1">
+                </div>
+ 
+ 
+                 <div class="form-group">
+                   <label>Author:</label>
+                   <input type="text" class="form-control" name="author" required="1">
+                </div>
+ 
+                  <div class="form-group">
+                   <label>Price:</label>
+                   <input type="number" class="form-control" name="price" required="1">
+                </div>
+ 
+                <div class="form-group">
+                   <button class="btn btn-primary mt-4" type="submit">Add Book</button>
+                </div>
+ 
+ 
+             </form>
+ 
+ 
+          </div>
+ 
+ 
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+ 
+          </div>
+ 
+       </div>
+    </div>
+ 
+ </div>
 
 {% endblock %}
