@@ -11,9 +11,9 @@
 </h1></br></br></br>
 {% if session %}
 <a href="{{ url_for('logout') }}" class="btn">Logout</a>
-<button class="btn btn-success"><a class="bottom" href="{{url_for('show')}}">Show all Books</a></button>
+<button class="btn btn-success"><a class="bottom" href="{{url_for('index')}}">Go back to User page</a></button>
 {% endif %}
-<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</button>
+<!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</button> -->
 
 
     <div class="container mt-4">
@@ -35,19 +35,19 @@
                     <th>Author</th>
                     <th>Category</th>
                     <th>Image link</th>
+                    <th>Owner</th>
                      <th colspan="2">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for book in books %}
-
-                     {% if book.userid == session.id %}
-                    <tr>
-                        <!-- <td>{{book.id}}</td> -->
+                   <tr>
                         <td>{{book.title}}</td>
                         <td>{{book.author}}</td>
                         <td>{{book.category}}</td>
                         <td>{{book.image_link}}</td>
+                        <td>{{book.userid}}</td>
+
                         <td>
                             <a href="/update/{{book.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{book.id}}">Update</a>
                              <a href="/delete/{{book.id}}" class="btn btn-danger" onclick="return confirm('Are you sure to delete ?')">Delete</a>
@@ -117,7 +117,6 @@
 
 </div>
 
-                     {% endif %}
                 {% endfor %}
             </tbody>
         </table>

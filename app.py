@@ -11,10 +11,18 @@ app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'newdata'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/newdata'
+app.config['MYSQL_DB'] = 'test1'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test1'
+
+# app.config['MYSQL_HOST'] = 'flaskdb.cviupmaskxl1.us-east-1.rds.amazonaws.com:3306'
+# app.config['MYSQL_USER'] = 'admin'
+# app.config['MYSQL_PASSWORD'] = 'Sanjose$2023'
+# app.config['MYSQL_DB'] = 'flaskaws'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:Sanjose$2023@flaskdb.cviupmaskxl1.us-east-1.rds.amazonaws.com:3306/flaskaws'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "somethingunique"
+
 
 # engine = create_engine('mysql://root:''@localhost/flaskaws')
 # connection = engine.raw_connection()
@@ -22,18 +30,6 @@ app.secret_key = "somethingunique"
 db = SQLAlchemy(app)
 mysql = MySQL(app)
 # db = MySQL(app)
-
-
-class Book(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    author = db.Column(db.String(100), nullable=False)
-    price = db.Column(db.Float)
-
-    def __init__(self, title, author, price):
-        self.title = title
-        self.author = author
-        self.price = price
 
 
 class User(db.Model):
@@ -50,6 +46,22 @@ class User(db.Model):
         self.participation = participation
 
 
+class Book(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    author = db.Column(db.String(100), nullable=False)
+    category = db.Column(db.String(100), nullable=False)
+    image_link = db.Column(db.String(500))
+    userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __init__(self, title, author, category, image_link, userid):
+        self.title = title
+        self.author = author
+        self.category = category
+        self.image_link = image_link
+        self.userid = userid
+
+
 @app.route('/')
 @app.route('/main')
 def main():
@@ -57,10 +69,18 @@ def main():
     return render_template('main.html')
 
 
+@app.route('/show')
+def show():
+    books = Book.query.all()
+    users = User.query.all()
+    return render_template('show.html', books=books, users=users)
+
+
 @app.route('/index')
 def index():
     books = Book.query.all()
-    return render_template('index.html', books=books)
+    users = User.query.all()
+    return render_template('index.html', books=books, users=users)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -77,11 +97,14 @@ def login():
             session['loggedin'] = True
             session['id'] = account['id']
             session['username'] = account['username']
-            msg = 'Logged in successfully !'
-            return render_template('index.html', msg=msg)
+            flash('Logged in successfully !', "success")
+            return redirect(url_for('index'))
+            # return redirect(url_for('index'))
         else:
-            msg = 'Incorrect username / password !'
-    return render_template('index.html', msg=msg)
+            flash('Login unsuccessfull', "danger")
+            return render_template('login.html')
+            # msg = 'Incorrect username / password !'
+    return render_template('login.html')
 
     # msg = ''
     # if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
@@ -139,10 +162,13 @@ def register():
             cursor.execute(
                 'INSERT INTO User VALUES (NULL, % s, % s, % s,% s)', (username, password, email, participation, ))
             mysql.connection.commit()
-            msg = 'You have successfully registered !'
-    elif request.method == 'POST':
-        msg = 'Please fill out the form !'
-    return render_template('index.html', msg=msg)
+            flash('You have successfully registered !', "success")
+            # return render_template('login.h)
+            return redirect(url_for('login'))
+
+    # elif request.method == 'POST':
+    #     msg = 'Please fill out the form !'
+    return render_template('register.html')
 
     # msg = ''
     # if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'participation' in request.form:
@@ -194,7 +220,9 @@ def insert_book():
         book = Book(
             title=request.form.get('title'),
             author=request.form.get('author'),
-            price=request.form.get('price')
+            category=request.form.get('category'),
+            image_link=request.form.get('image_link'),
+            userid=session['id']
         )
         db.session.add(book)
         db.session.commit()
