@@ -8,6 +8,7 @@ from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
 
+app.jinja_env.filters['zip'] = zip
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
