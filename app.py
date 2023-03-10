@@ -62,13 +62,6 @@ def index():
     books = Book.query.all()
     return render_template('index.html', books=books)
 
-############
-@app.route('/show_books')
-def show_books():
-    books = Book.query.all()
-    return render_template('show_books.html', books=books)
-###########
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     msg = ''
