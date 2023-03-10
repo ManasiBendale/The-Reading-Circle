@@ -1,3 +1,4 @@
+<div class="backg">
 {% extends 'base.html' %}
 
 
@@ -16,10 +17,10 @@
             {% endif %}
         {% endwith %} -->
 
-        <h1>Welcome to the Book Club!</h1>
-       <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#signup_modal">Sign Up</button>
-       <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#login_modal">Login</button>
-        
+       <div class="buttons">
+       <button class="btn btn-success signup" data-bs-toggle="modal" data-bs-target="#signup_modal">Sign Up</button>
+       <button class="btn btn-success login" data-bs-toggle="modal" data-bs-target="#login_modal">Login</button>
+      </div>
        <!-- Modal for Signing Up -->
  <div id="signup_modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -213,5 +214,37 @@
             <!-- </tbody>
         </table> -->
     </div>
-
+<style>
+   .backg{
+      background-image: url(/static/homepage.jpeg);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size:cover;
+      height: 110%;
+      width: auto;
+   }
+   .signup{
+      margin-top: 450px;
+      margin-right: 40px;
+      background-color: white; 
+      color: black; 
+      border: 5px solid #2e6f30;
+      text-decoration: none;
+   }
+   .login{
+      margin-top: 450px;
+      background-color: white; 
+      color: black; 
+      border: 5px solid #2e6f30;
+      text-decoration: none;
+   }
+   .login.signup{
+      display: inline-block;
+      
+   }
+   .buttons{
+      text-align: center;
+   }
+</style>
 {% endblock %}
+</div>
