@@ -5,6 +5,7 @@ from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
 from passlib.hash import sha256_crypt
+import base64
 
 app = Flask(__name__)
 
@@ -52,7 +53,8 @@ class Book(db.Model):
     title = db.Column(db.String(100), nullable=False)
     author = db.Column(db.String(100), nullable=False)
     category = db.Column(db.String(100), nullable=False)
-    image_link = db.Column(db.String(500))
+    image_link = db.Column(db.String(100), nullable=False)
+    # image_link = db.Column(db.LargeBinary, nullable=True)
     userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __init__(self, title, author, category, image_link, userid):
@@ -119,8 +121,8 @@ def login():
         cursor.execute(
             'SELECT * FROM user WHERE username = % s', [username, ])
         account = cursor.fetchone()
-        print("1ST PASSWORD:", password)
-        print("2ND PASSWORD: ", secure_password)
+        # print("1ST PASSWORD:", password)
+        # print("2ND PASSWORD: ", secure_password)
         if account:
             if sha256_crypt.verify(password, secure_password):
                 session['loggedin'] = True
@@ -177,12 +179,18 @@ def register():
 
 @app.route('/add/', methods=['POST'])
 def insert_book():
+
     if request.method == "POST":
+        # pdf_file = request.files['image_link']
+        # pdf_data = pdf_file.read()
+        # pdf_data_b64 = base64.b64encode(pdf_data)
+
         book = Book(
             title=request.form.get('title'),
             author=request.form.get('author'),
             category=request.form.get('category'),
             image_link=request.form.get('image_link'),
+            # image_link=pdf_data_b64,
             userid=session['id']
         )
         db.session.add(book)
@@ -198,7 +206,8 @@ def update():
 
         my_data.title = request.form['title']
         my_data.author = request.form['author']
-        my_data.price = request.form['price']
+        my_data.category = request.form['category']
+        my_data.image_link = request.form['image_link']
 
         db.session.commit()
         flash("Book is updated")
