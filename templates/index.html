@@ -12,9 +12,8 @@
 {% if session %}
 <a href="{{ url_for('logout') }}" class="btn">Logout</a>
 <button class="btn btn-success"><a class="bottom" href="{{url_for('show')}}">Show all Books</a></button>
-{% endif %}
 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</button>
-
+{% endif %}
 
     <div class="container mt-4">
         {% with messages = get_flashed_messages() %}
@@ -35,7 +34,7 @@
                     <th>Author</th>
                     <th>Category</th>
                     <th>Image link</th>
-                     <th colspan="2">Actions</th>
+                     <th colspan="1">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,6 +50,9 @@
                         <td>
                            <a href="/update/{{book.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{book.id}}">Update</a>
                            <a href="/delete/{{book.id}}" class="btn btn-danger" onclick="return confirm('Are you sure to delete ?')">Delete</a>
+                           <!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#choose_modal">Choose Book</button> -->
+                           <a href="/choose_book/{{book.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalchoose{{book.id}}">Choose book</a>
+
                         </td>
                     </tr>
 
@@ -117,11 +119,86 @@
 
 </div>
 
+
+
+
+   <!-- choose book model -->
+   <div id="modalchoose{{book.id}}" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h4 class="modal-title">Update Book</h4>
+            </div>
+            <div class="modal-body">
+   
+               <form action="{{url_for('choose_book')}}" method="POST">
+   
+   
+                  <div class="form-group">
+   
+                     <label>Are you sure you want to choose this book?</label>
+   
+                    <input type="hidden"  name="bookid" value="{{book.id}}">
+                    <input type="hidden"  name="title" value="{{book.title}}">
+                     <input type="text" class="form-control" name="title" value="{{book.title}}" >
+   
+                  </div>
+   
+   
+   
+                   <!-- <div class="form-group">
+                     <label>Author:</label>
+                     <input type="text" class="form-control" name="author" value="{{book.author}}">
+                  </div>
+   
+                    <div class="form-group">
+                     <label>Category:</label>
+                     <input type="text" class="form-control" name="category" value="{{book.category}}">
+                  </div>
+   
+                  <div class="form-group">
+                     <label>Imafe Link:</label>
+                     <input type="text" class="form-control" name="image_link" value="{{book.image_link}}">
+                  </div> -->
+   
+                  <div class="form-group">
+                     <button class="btn btn-primary mt-4" type="submit">Choose Book</button>
+                  </div>
+   
+   
+               </form>
+   
+   
+            </div>
+   
+   
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+   
+            </div>
+   
+   
+         </div>
+   
+   
+      </div>
+   
+   
+   </div>
+
                      {% endif %}
                 {% endfor %}
             </tbody>
         </table>
     </div>
+
+
+
+           
+
+
+
+
 
     <!-- Modal  for inserting the book -->
  <div id="insert_modal" class="modal fade" role="dialog">
