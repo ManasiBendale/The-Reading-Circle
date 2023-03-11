@@ -70,6 +70,13 @@ def main():
     return render_template('main.html')
 
 
+# @app.route('/request')
+# def request():
+#     books = Book.query.all()
+#     users = User.query.all()
+#     return render_template('show.html', books=books, users=users)
+
+
 @app.route('/show')
 def show():
     books = Book.query.all()
