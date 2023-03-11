@@ -9,6 +9,7 @@
     Hi {{session.username}} {{session.id}} !!</br></br> Welcome to the index page...
 
     {% for user in users %}
+    {% for swap in swaps %}
 
          {% if user.id == session.id %}
 
@@ -62,7 +63,9 @@
                            <!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#choose_modal">Choose Book</button> -->
 
                            {% if user.participation == 'yes' %}
+                           {% if swap.userid != session.id %}
                            <a href="/choose_book/{{book.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalchoose{{book.id}}">Choose book</a>
+                           {% endif %}
                            {% endif %}
                         </td>
                     </tr>
@@ -201,6 +204,8 @@
 
                      {% endif %}
                 {% endfor %}
+                {% endfor %}
+
             </tbody>
         </table>
     </div>

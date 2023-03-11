@@ -107,7 +107,8 @@ def show():
 def index():
     books = Book.query.all()
     users = User.query.all()
-    return render_template('index.html', books=books, users=users)
+    swaps = Swap.query.all()
+    return render_template('index.html', books=books, users=users, swaps=swaps)
 
 
 @app.route('/login', methods=['GET', 'POST'])
