@@ -70,13 +70,6 @@ def main():
     return render_template('main.html')
 
 
-# @app.route('/request')
-# def request():
-#     books = Book.query.all()
-#     users = User.query.all()
-#     return render_template('show.html', books=books, users=users)
-
-
 @app.route('/show')
 def show():
     books = Book.query.all()
@@ -97,44 +90,29 @@ def login():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
+        secure_password = sha256_crypt.encrypt(str(password))
+        print("!st Password:", password)
+        print("2st Password:", secure_password)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
-            'SELECT * FROM User WHERE username = % s AND password = % s', [username, password, ])
+            'SELECT * FROM User WHERE username = % s', [username, ])
         account = cursor.fetchone()
         if account:
-            session['loggedin'] = True
-            session['id'] = account['id']
-            session['username'] = account['username']
-            flash('Logged in successfully !', "success")
-            return redirect(url_for('index'))
-            # return redirect(url_for('index'))
+            if sha256_crypt.verify(password, secure_password):
+                session['loggedin'] = True
+                session['id'] = account['id']
+                session['username'] = account['username']
+                flash('Login Successful!', "success")
+                return redirect(url_for('index'))
+            else:
+                flash(
+                    'Login unsuccessful! Your Username or Password might be wrong!', "danger")
+                return render_template('login.html')
         else:
-            flash('Login unsuccessfull', "danger")
+            flash(
+                'Login unsuccessful! Your account does not exist', "danger")
             return render_template('login.html')
-            # msg = 'Incorrect username / password !'
     return render_template('login.html')
-
-    # msg = ''
-    # if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-    #     username = request.form['username']
-    #     password = request.form['password']
-    #     # cursor = db.connection.cursor(MySQLdb.cursors.DictCursor)
-    #     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
-    #     account = cursor.execute(
-    #         'SELECT * FROM User WHERE username = % s AND password = % s', [username, password, ])
-    #     # account = cursor.fetchone()
-    #     print("QWERTYUIOP", account)
-    #     if account:
-    #         session['loggedin'] = True
-    #         session['id'] = account['id']
-    #         session['username'] = account['username']
-    #         flash("User logged in successfully")
-    #         return render_template('index.html', msg=msg)
-    #     else:
-    #         flash('Incorrect username / password !')
-    # # return render_template('login.html', msg=msg)
-
-    # return redirect(url_for('index'))
 
 
 @app.route('/logout')
@@ -154,72 +132,24 @@ def register():
         password = request.form['password']
         email = request.form['email']
         participation = request.form['participation']
+        secure_password = sha256_crypt.encrypt(str(password))
+
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
             'SELECT * FROM User WHERE username = % s', (username, ))
         account = cursor.fetchone()
         if account:
-            msg = 'Account already exists !'
-        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-            msg = 'Invalid email address !'
-        elif not re.match(r'[A-Za-z0-9]+', username):
-            msg = 'Username must contain only characters and numbers !'
+            flash('Account already exists !', "danger")
         elif not username or not password or not email:
-            msg = 'Please fill out the form !'
+            flash('Please fill out the form !', "danger")
         else:
             cursor.execute(
-                'INSERT INTO User VALUES (NULL, % s, % s, % s,% s)', (username, password, email, participation, ))
+                'INSERT INTO User VALUES (NULL, % s, % s, % s,% s)', (username, secure_password, email, participation, ))
             mysql.connection.commit()
             flash('You have successfully registered !', "success")
-            # return render_template('login.h)
             return redirect(url_for('login'))
 
-    # elif request.method == 'POST':
-    #     msg = 'Please fill out the form !'
     return render_template('register.html')
-
-    # msg = ''
-    # if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'participation' in request.form:
-    #     # user = User(
-    #     # username=request.form.get('username'),
-    #     # password=request.form.get('password'),
-    #     # email=request.form.get('email'),
-    #     # participation=request.form.get('participation')
-    #     # )
-    #     username = request.form['username']
-    #     password = request.form['password']
-    #     email = request.form['email']
-    #     participation = request.form['participation']
-    #     password = sha256_crypt.encrypt(str(password))
-
-    #     cursor = connection.cursor(MySQLdb.cursors.DictCursor)
-    #     userdata = cursor.execute(
-    #         'SELECT * FROM User WHERE username = % s', [username, ])
-    #     print("ACCOUNT:", userdata)
-    #     # account = db.session.execute(
-    #     #     db.select(User).filter_by(username=username)).scalar_one()
-    #     # account = str(userdata).fetchone()
-    #     account = userdata
-    #     print("ACCOUNT:", type(account))
-    #     if account:
-    #         flash('Account already exists! Retry.')
-    #     elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-    #         flash('Invalid email address!')
-
-    #     else:
-    #         user = User(username=username, email=email,
-    #                     password=password, participation=participation)
-    #         db.session.add(user)
-    #         db.session.commit()
-    #         flash("User added successfully")
-    #         # msg = 'You have successfully registered !'
-    #     # db.session.add(user)
-    #     # db.session.commit()
-
-    # elif request.method == 'POST':
-    #     msg = 'Please fill out the form !'
-    # # return render_template('register.html', msg=msg)
-    # return redirect(url_for('index'))
 
 
 @app.route('/add/', methods=['POST'])
