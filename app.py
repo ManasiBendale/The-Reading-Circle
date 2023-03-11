@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, Response
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from flask_mysqldb import MySQL
@@ -86,6 +86,12 @@ class Swap(db.Model):
 def main():
     # books = Book.query.all()
     return render_template('main.html')
+
+
+@app.route('/swap')
+def swap():
+    # books = Book.query.all()
+    return render_template('swap.html')
 
 
 @app.route('/request')
@@ -182,22 +188,29 @@ def register():
 def insert_book():
 
     if request.method == "POST":
-        # pdf_file = request.files['image_link']
-        # pdf_data = pdf_file.read()
-        # pdf_data_b64 = base64.b64encode(pdf_data)
+        pdf_file = request.files['pdf']
+        pdf_data = pdf_file.read()
+        pdf_data_b64 = base64.b64encode(pdf_data)
 
         book = Book(
             title=request.form.get('title'),
             author=request.form.get('author'),
             category=request.form.get('category'),
-            image_link=request.form.get('image_link'),
-            # image_link=pdf_data_b64,
+            # image_link=request.form.get('image_link'),
+            image_link=pdf_data_b64,
             userid=session['id']
         )
         db.session.add(book)
         db.session.commit()
         flash("Book added successfully")
         return redirect(url_for('index'))
+
+
+@app.route('/view-pdf')
+def view_pdf():
+    pdf_id = request.args.get('image_link')
+    pdf = Book.query.filter_by(image_link=pdf_id).first()
+    return Response(pdf.data, mimetype='application/pdf')
 
 
 @app.route('/update/', methods=['POST'])
