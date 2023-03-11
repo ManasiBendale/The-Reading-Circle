@@ -11,9 +11,9 @@ app = Flask(__name__)
 app.jinja_env.filters['zip'] = zip
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = 'Sanjose@2023'
 app.config['MYSQL_DB'] = 'test1'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test1'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Sanjose%402023@localhost/test1'
 
 # app.config['MYSQL_HOST'] = 'flaskdb.cviupmaskxl1.us-east-1.rds.amazonaws.com:3306'
 # app.config['MYSQL_USER'] = 'admin'
