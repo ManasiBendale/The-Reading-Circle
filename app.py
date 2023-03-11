@@ -8,25 +8,25 @@ from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
 
-app.jinja_env.filters['zip'] = zip
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'test1'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test1'
+# app.jinja_env.filters['zip'] = zip
+# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_USER'] = 'root'
+# app.config['MYSQL_PASSWORD'] = ''
+# app.config['MYSQL_DB'] = 'test1'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test1'
 
-# app.config['MYSQL_HOST'] = 'flaskdb.cviupmaskxl1.us-east-1.rds.amazonaws.com:3306'
-# app.config['MYSQL_USER'] = 'admin'
-# app.config['MYSQL_PASSWORD'] = 'Sanjose$2023'
-# app.config['MYSQL_DB'] = 'flaskaws'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:Sanjose$2023@flaskdb.cviupmaskxl1.us-east-1.rds.amazonaws.com:3306/flaskaws'
+app.config['MYSQL_HOST'] = 'flaskdb.ccmebdkxgfmf.us-west-1.rds.amazonaws.com'
+app.config['MYSQL_USER'] = 'admin'
+app.config['MYSQL_PASSWORD'] = 'Sanjose$2023'
+app.config['MYSQL_DB'] = 'flaskaws'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:Sanjose$2023@flaskdb.ccmebdkxgfmf.us-west-1.rds.amazonaws.com/flaskaws'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "somethingunique"
 
 
-# engine = create_engine('mysql://root:''@localhost/flaskaws')
-# connection = engine.raw_connection()
+engine = create_engine('mysql://admin:Sanjose$2023@flaskdb.ccmebdkxgfmf.us-west-1.rds.amazonaws.com/flaskaws')
+connection = engine.raw_connection()
 # cursor = connection.cursor()
 db = SQLAlchemy(app)
 mysql = MySQL(app)
