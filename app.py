@@ -117,7 +117,7 @@ def login():
         secure_password = sha256_crypt.encrypt(str(password))
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
-            'SELECT * FROM User WHERE username = % s', [username, ])
+            'SELECT * FROM user WHERE username = % s', [username, ])
         account = cursor.fetchone()
         print("1ST PASSWORD:", password)
         print("2ND PASSWORD: ", secure_password)
@@ -159,7 +159,7 @@ def register():
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
-            'SELECT * FROM User WHERE username = % s', (username, ))
+            'SELECT * FROM user WHERE username = % s', (username, ))
         account = cursor.fetchone()
         if account:
             flash('Account already exists !', "danger")
@@ -167,7 +167,7 @@ def register():
             flash('Please fill out the form !', "danger")
         else:
             cursor.execute(
-                'INSERT INTO User VALUES (NULL, % s, % s, % s,% s)', (username, secure_password, email, participation, ))
+                'INSERT INTO user VALUES (NULL, % s, % s, % s,% s)', (username, secure_password, email, participation, ))
             mysql.connection.commit()
             flash('You have successfully registered !', "success")
             return redirect(url_for('login'))
