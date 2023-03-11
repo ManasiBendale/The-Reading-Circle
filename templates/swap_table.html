@@ -41,55 +41,6 @@
     </div>
 
     <script>
-  // function updateTime() {
-  //   const timer = document.getElementById("timer");
-  //   const enableButton = document.getElementById("enableButton");
-  //   const container = document.querySelector(".w3-container");
-
-  //   // Set the end date to 30 days from now
-  //   const endDate = new Date();
-  //   endDate.setDate(endDate.getDate() + 0);
-
-  //   // Calculate the remaining time in milliseconds
-  //   const remainingTime = endDate.getTime() - new Date().getTime();
-
-  //   // Convert remaining time to days, hours, minutes, and seconds
-  //   let remainingSeconds = Math.ceil(remainingTime / 1000);
-  //   const remainingMinutes = Math.floor(remainingSeconds / 60);
-  //   const remainingHours = Math.floor(remainingMinutes / 60);
-  //   const remainingDays = Math.floor(remainingHours / 24);
-
-  //   // Calculate the remaining time as a string
-  //   const remainingTimeString = `${remainingDays}d ${remainingHours % 24}h ${remainingMinutes % 60}m ${remainingSeconds % 60}s`;
-
-  //   // Update the timer element with the remaining time
-  //   timer.innerHTML = remainingTimeString;
-
-  //   // Change background color of the container based on remaining time
-  //   if (remainingDays <= 10) {
-  //     container.style.backgroundColor = "red";
-  //   } else if (remainingDays <= 20) {
-  //     container.style.backgroundColor = "yellow";
-  //   } else {
-  //     container.style.backgroundColor = "green";
-  //   }
-
-  //   // Enable the button after 30 days
-  //   if (remainingTime <= 0) {
-  //     enableButton.textContent = "SWAP";
-  //     enableButton.disabled = false;
-  //   }
-
-  //   // Display countdown of hours, minutes, and seconds
-  //   // const hoursString = `${remainingHours.toString().padStart(2, "0")}:`;
-  //   const minutesString = `${(remainingMinutes % 60).toString().padStart(2, "0")}:`;
-  //   const secondsString = `${(remainingSeconds % 60).toString().padStart(2, "0")}`;
-  //   timer.innerHTML = `${hoursString}${minutesString}${secondsString} (${remainingTimeString})`;
-  // }
-
-  // // Call the updateTime function every second
-  // setInterval(updateTime, 100);
-
   function updateTime() {
   const timer = document.getElementById("timer");
   const enableButton = document.getElementById("enableButton");
