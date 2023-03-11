@@ -8,14 +8,12 @@
 <h1>
     Hi {{session.username}} {{session.id}} !!</br></br> Welcome to the index page...
 
-         
 </h1></br></br></br>
-
+{% if session %}
 <a href="{{ url_for('logout') }}" class="btn">Logout</a>
 <button class="btn btn-success"><a class="bottom" href="{{url_for('show')}}">Show all Books</a></button>
 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</button>
-
-
+{% endif %}
 
     <div class="container mt-4">
         {% with messages = get_flashed_messages() %}
@@ -35,28 +33,30 @@
                     <th>Title</th>
                     <th>Author</th>
                     <th>Category</th>
-                    <th>Image link</th>
+                    <!-- <th>Image link</th> -->
                      <th colspan="1">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for book in books %}
+
                      {% if book.userid == session.id %}
                     <tr>
                         <!-- <td>{{book.id}}</td> -->
                         <td>{{book.title}}</td>
                         <td>{{book.author}}</td>
                         <td>{{book.category}}</td>
-                        <td><a href="/view-pdf?image_link={{ book.image_link }}">View PDF</a></td>
                         <!-- <td>{{book.image_link}}</td> -->
                         <td>
                            <a href="/update/{{book.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{book.id}}">Update</a>
                            <a href="/delete/{{book.id}}" class="btn btn-danger" onclick="return confirm('Are you sure to delete ?')">Delete</a>
                            <!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#choose_modal">Choose Book</button> -->
-                           
+
+                           {% if session.participation == 'yes' %}
+                           <a href="/choose_book/{{book.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalchoose{{book.id}}">Choose book</a>
+                           {% endif %}
                         </td>
                     </tr>
-
 
 
    <!-- update model -->
@@ -80,6 +80,7 @@
                </div>
 
 
+
                 <div class="form-group">
                   <label>Author:</label>
                   <input type="text" class="form-control" name="author" value="{{book.author}}">
@@ -91,7 +92,7 @@
                </div>
 
                <div class="form-group">
-                  <label>Image Link:</label>
+                  <label>Imafe Link:</label>
                   <input type="text" class="form-control" name="image_link" value="{{book.image_link}}">
                </div>
 
@@ -186,14 +187,13 @@
    
    
    </div>
-                  
 
+                     {% endif %}
+                {% endfor %}
             </tbody>
         </table>
     </div>
 
-                     {% endif %}
-               {% endfor %}
 
 
            
@@ -211,7 +211,7 @@
           </div>
           <div class="modal-body">
  
-             <form action="{{url_for('insert_book')}}" method="POST" enctype="multipart/form-data">
+             <form action="{{url_for('insert_book')}}" method="POST">
  
  
                 <div class="form-group">
@@ -231,15 +231,15 @@
                 </div>
 
 
-                <!-- <div class="form-group">
+                <div class="form-group">
                   <label>image_link:</label>
                   <input type="text" class="form-control" name="image_link" required="1">
-               </div> -->
-
-                <div class="form-group">
-                  <label>Please upload a PDF of the book:</label>
-                  <input type="file" name="pdf" />
                </div>
+
+                <!-- <div class="form-group">
+                  <label>Please upload a PDF of the book:</label>
+                  <input type="file" name="image_link" accept="application/pdf,application/vnd.ms-excel" />
+               </div> -->
  
                 <div class="form-group">
                    <button class="btn btn-primary mt-4" type="submit">Add Book</button>
@@ -262,6 +262,4 @@
  
  </div>
 
-
- 
 {% endblock %}
