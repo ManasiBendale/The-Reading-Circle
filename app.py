@@ -63,11 +63,35 @@ class Book(db.Model):
         self.userid = userid
 
 
+class Swap(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    main_owner = db.Column(db.String(100))
+    new_owner = db.Column(db.String(500))
+    bookid = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
+    userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __init__(self, title, main_owner, new_owner, bookid, userid):
+        self.title = title
+        self.main_owner = main_owner
+        self.new_owner = new_owner
+        self.bookid = bookid
+        self.userid = userid
+
+
 @app.route('/')
 @app.route('/main')
 def main():
     # books = Book.query.all()
     return render_template('main.html')
+
+
+@app.route('/request')
+def request_book():
+    books = Book.query.all()
+    users = User.query.all()
+    flash("You have successfully requested this book!", "success")
+    return render_template('index.html', books=books, users=users)
 
 
 @app.route('/show')
@@ -91,26 +115,25 @@ def login():
         username = request.form['username']
         password = request.form['password']
         secure_password = sha256_crypt.encrypt(str(password))
-        print("!st Password:", password)
-        print("2st Password:", secure_password)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
             'SELECT * FROM User WHERE username = % s', [username, ])
         account = cursor.fetchone()
+        print("1ST PASSWORD:", password)
+        print("2ND PASSWORD: ", secure_password)
         if account:
             if sha256_crypt.verify(password, secure_password):
                 session['loggedin'] = True
                 session['id'] = account['id']
                 session['username'] = account['username']
-                flash('Login Successful!', "success")
+                flash('Logged in successfully !', "success")
                 return redirect(url_for('index'))
             else:
                 flash(
-                    'Login unsuccessful! Your Username or Password might be wrong!', "danger")
+                    'Login unsuccessful! Your account or password must be wrong!', "danger")
                 return render_template('login.html')
         else:
-            flash(
-                'Login unsuccessful! Your account does not exist', "danger")
+            flash('Login unsuccessful! Account does not exist!', "danger")
             return render_template('login.html')
     return render_template('login.html')
 
@@ -134,27 +157,19 @@ def register():
         participation = request.form['participation']
         secure_password = sha256_crypt.encrypt(str(password))
 
-        pattern = r"[^a-zA-Z0-9]"
-
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
             'SELECT * FROM User WHERE username = % s', (username, ))
         account = cursor.fetchone()
         if account:
-            flash('Account already exists!', "danger")
-            return render_template('register.html')
-        elif re.search(pattern, username):
-            flash('Account already exists!', "danger")
-            return render_template('register.html')
+            flash('Account already exists !', "danger")
         elif not username or not password or not email:
-            flash('Please fill out the form!', "danger")
-            return render_template('register.html')
+            flash('Please fill out the form !', "danger")
         else:
             cursor.execute(
                 'INSERT INTO User VALUES (NULL, % s, % s, % s,% s)', (username, secure_password, email, participation, ))
             mysql.connection.commit()
-            flash(
-                'You have successfully registered! Please login to go your account.', "success")
+            flash('You have successfully registered !', "success")
             return redirect(url_for('login'))
 
     return render_template('register.html')
@@ -197,6 +212,23 @@ def delete(id):
     db.session.commit()
     flash("Book is deleted")
     return redirect(url_for('index'))
+
+
+@app.route('/choose_book/', methods=['POST'])
+def choose_book():
+    if request.method == "POST":
+
+        book = Swap(
+            title=request.form.get('title'),
+            main_owner=session['username'],
+            new_owner=session['username'],
+            bookid=request.form.get('bookid'),
+            userid=session['id']
+        )
+        db.session.add(book)
+        db.session.commit()
+        flash("Book chosen successfully!", "success")
+        return redirect(url_for('index'))
 
 
 if __name__ == "__main__":
