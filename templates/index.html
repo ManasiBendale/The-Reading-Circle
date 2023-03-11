@@ -5,8 +5,33 @@
 
 
 {% block body %}
+<!-- <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+        <script defer src="https://pyscript.net/alpha/pyscript.js"></script>  -->
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+   
+        <div class="head">
+            <div class="row d-flex justify-content-center">
+                <div class="col-xs-3">
+                    <img class="img-responsive" src="/static/book_login.jpeg" alt="Book Logo">
+                </div>
+                <div class="col-xs-7">
+                    <h1>The Reading Circle</h1>
+                    <p>Experience the joy of reading with The Reading Circle - where every book is a new adventure!</p>
+                </div>
+            </div>
+        </div>
+    <style>
+      .head {
+          background-color: black;
+          color: white;
+      }
+  </style>
+        <!---->
 <h1 style="font-family: Times;">
-    Hi {{session.username}} {{session.id}} , </br></br> Welcome to the index page!
+    Hi {{session.username}} {{session.id}} , </br></br> Welcome to the Reading circle page!
 
 </h1></br></br></br>
 {% if session %}
