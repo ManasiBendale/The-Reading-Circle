@@ -134,19 +134,27 @@ def register():
         participation = request.form['participation']
         secure_password = sha256_crypt.encrypt(str(password))
 
+        pattern = r"[^a-zA-Z0-9]"
+
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
             'SELECT * FROM User WHERE username = % s', (username, ))
         account = cursor.fetchone()
         if account:
-            flash('Account already exists !', "danger")
+            flash('Account already exists!', "danger")
+            return render_template('register.html')
+        elif re.search(pattern, username):
+            flash('Account already exists!', "danger")
+            return render_template('register.html')
         elif not username or not password or not email:
-            flash('Please fill out the form !', "danger")
+            flash('Please fill out the form!', "danger")
+            return render_template('register.html')
         else:
             cursor.execute(
                 'INSERT INTO User VALUES (NULL, % s, % s, % s,% s)', (username, secure_password, email, participation, ))
             mysql.connection.commit()
-            flash('You have successfully registered !', "success")
+            flash(
+                'You have successfully registered! Please login to go your account.', "success")
             return redirect(url_for('login'))
 
     return render_template('register.html')
