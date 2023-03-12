@@ -47,24 +47,27 @@
 						   <input id="password" type="password" class="form-control" name="password" required="1">
 						</div>
 						<b></b>
+
+						<p class="bottom">Don't have an account? <a class="bottom" href="{{url_for('register')}}"> Sign Up here</a></p>
 		 
 		 
 						<div class="form-group">
 						   <button class="btn btn-primary mt-4" type="submit">Login</button>
 						</div>
-		 
+
+						<div class="modal-footer">
+							<a href="{{url_for('main')}}" class="btn btn-secondary">Back to Main Page</a>
+				
+						 </div>
 		 
 					 </form>
 		 
 		 
 				  </div>
 		 
-			<p class="bottom">Don't have an account? <a class="bottom" href="{{url_for('register')}}"> Sign Up here</a></p>
+			
 				  
-				  <div class="modal-footer">
-					 <button type="button" class="btn btn-secondary"><a href="{{url_for('main')}}">Close</a></button>
-		 
-				  </div>
+				  
 		 
 			   </div>
 			</div>

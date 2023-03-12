@@ -13,25 +13,15 @@ app.jinja_env.filters['zip'] = zip
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'test2'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test2'
-
-# app.config['MYSQL_HOST'] = 'flaskdb.cviupmaskxl1.us-east-1.rds.amazonaws.com:3306'
-# app.config['MYSQL_USER'] = 'admin'
-# app.config['MYSQL_PASSWORD'] = 'Sanjose$2023'
-# app.config['MYSQL_DB'] = 'flaskaws'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:Sanjose$2023@flaskdb.cviupmaskxl1.us-east-1.rds.amazonaws.com:3306/flaskaws'
+app.config['MYSQL_DB'] = 'test3'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test3'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "somethingunique"
 
 
-# engine = create_engine('mysql://root:''@localhost/flaskaws')
-# connection = engine.raw_connection()
-# cursor = connection.cursor()
 db = SQLAlchemy(app)
 mysql = MySQL(app)
-# db = MySQL(app)
 
 
 class User(db.Model):
@@ -39,12 +29,14 @@ class User(db.Model):
     username = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
+    city = db.Column(db.String(100), nullable=False)
     participation = db.Column(db.String(100), nullable=False)
 
-    def __init__(self, username, email, password, participation):
+    def __init__(self, username, email, password, participation, city):
         self.username = username
         self.password = password
         self.email = email
+        self.city = city
         self.participation = participation
 
 
@@ -52,16 +44,20 @@ class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     author = db.Column(db.String(100), nullable=False)
+    summary = db.Column(db.String(40), nullable=False)
     category = db.Column(db.String(100), nullable=False)
+    rating = db.Column(db.String(100), nullable=False)
     image_link = db.Column(db.String(100), nullable=False)
     # image_link = db.Column(db.LargeBinary, nullable=True)
     userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    def __init__(self, title, author, category, image_link, userid):
+    def __init__(self, title, author, category, image_link, userid, summary, rating):
         self.title = title
         self.author = author
         self.category = category
         self.image_link = image_link
+        self.summary = summary
+        self.rating = rating
         self.userid = userid
 
 
@@ -117,6 +113,8 @@ def index():
     return render_template('index.html', books=books, users=users, swaps=swaps)
 
 
+# USER DETAILS--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     msg = ''
@@ -128,8 +126,7 @@ def login():
         cursor.execute(
             'SELECT * FROM user WHERE username = % s', [username, ])
         account = cursor.fetchone()
-        # print("1ST PASSWORD:", password)
-        # print("2ND PASSWORD: ", secure_password)
+
         if account:
             if sha256_crypt.verify(password, secure_password):
                 session['loggedin'] = True
@@ -152,17 +149,17 @@ def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('username', None)
-    flash("User logged out successfully")
+    # flash("User logged out successfully")
     return redirect(url_for('main'))
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    msg = ''
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'participation' in request.form:
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'participation' in request.form and 'city' in request.form:
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
+        city = request.form['city']
         participation = request.form['participation']
         secure_password = sha256_crypt.encrypt(str(password))
 
@@ -176,7 +173,7 @@ def register():
             flash('Please fill out the form !', "danger")
         else:
             cursor.execute(
-                'INSERT INTO user VALUES (NULL, % s, % s, % s,% s)', (username, secure_password, email, participation, ))
+                'INSERT INTO user VALUES (NULL, % s, % s, % s,% s,% s)', (username, secure_password, email, city, participation, ))
             mysql.connection.commit()
             flash('You have successfully registered !', "success")
             return redirect(url_for('login'))
@@ -184,20 +181,40 @@ def register():
     return render_template('register.html')
 
 
+@app.route('/update_profile/', methods=['POST'])
+def update_profile():
+    if request.method == "POST":
+        my_data = User.query.get(request.form.get('id'))
+        my_data.username = request.form['username']
+        my_data.email = request.form['email']
+        my_data.city = request.form['city']
+        my_data.participation = request.form['participation']
+
+        db.session.commit()
+        flash("Profile is updated!")
+        return redirect(url_for('index'))
+
+# USER DETAILS---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# BOOK DETAILS-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 @app.route('/add/', methods=['POST'])
 def insert_book():
 
     if request.method == "POST":
-        # pdf_file = request.files['pdf']
-        # pdf_data = pdf_file.read()
-        # pdf_data_b64 = base64.b64encode(pdf_data)
+        pdf_file = request.files['pdf']
+        pdf_data = pdf_file.read()
+        pdf_data_b64 = base64.b64encode(pdf_data)
 
         book = Book(
             title=request.form.get('title'),
             author=request.form.get('author'),
+            summary=request.form.get('summary'),
             category=request.form.get('category'),
-            image_link=request.form.get('image_link'),
-            # image_link=pdf_data_b64,
+            rating=request.form.get('rating'),
+            # image_link=request.form.get('image_link'),
+            image_link=pdf_data_b64,
             userid=session['id']
         )
         db.session.add(book)
@@ -206,11 +223,11 @@ def insert_book():
         return redirect(url_for('index'))
 
 
-@app.route('/view-pdf')
-def view_pdf():
-    pdf_id = request.args.get('image_link')
-    pdf = Book.query.filter_by(image_link=pdf_id).first()
-    return Response(pdf.data, mimetype='application/pdf')
+# @app.route('/view-pdf')
+# def view_pdf():
+#     pdf_id = request.args.get('image_link')
+#     pdf = Book.query.filter_by(image_link=pdf_id).first()
+#     return Response(pdf.data, mimetype='application/pdf')
 
 
 @app.route('/update/', methods=['POST'])
@@ -220,8 +237,10 @@ def update():
 
         my_data.title = request.form['title']
         my_data.author = request.form['author']
+        my_data.summary = request.form['summary']
         my_data.category = request.form['category']
-        my_data.image_link = request.form['image_link']
+        my_data.rating = request.form['rating']
+        # my_data.image_link = request.form['image_link']
 
         db.session.commit()
         flash("Book is updated")
@@ -252,6 +271,9 @@ def choose_book():
         db.session.commit()
         flash("Book chosen successfully!", "success")
         return redirect(url_for('index'))
+
+
+# BOOK DETAILS-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 if __name__ == "__main__":
