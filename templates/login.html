@@ -34,24 +34,23 @@
 	<div>
 		<div>
 			<div>
-				<div>
-					<h4 class="modal-title" style="color: white; margin-top: 40px;">Login</h4>
-				</div>
-				</br>
-				<div class="modal-body" style="display:inline-block; margin-top: 20px;">
+				
+				<div class="modal-body" style="display:inline-block; margin-top: 90px;">
 
 					<form action="{{url_for('login')}}" method="POST">
-
+						<div>
+							<h4 class="modal-title" style="color: black; margin-top: 10px;">Login</h4>
+						</div>
 
 						<div class="form-group">
-							<label style="color: white; margin-top: 35px; font-size: 20px; margin-bottom: 15px;">Username:</label>
-							<input id="username" type="text" class="form-control" name="username" required="1">
+							<label style="color: black; margin-top: 35px; font-size: 20px; margin-bottom: 15px;">Username:</label>
+							<input id="username" type="text" class="form-control" name="username" required="1" style="width:200px;display:block; margin-left: 80px;">
 						</div>
 					</br>
 
 						<div class="form-group">
-							<label style="color: white; font-size: 20px; margin-bottom: 15px;">Password:</label>
-							<input id="password" type="password" class="form-control" name="password" required="1">
+							<label style="color: black; font-size: 20px; margin-bottom: 15px;">Password:</label>
+							<input id="password" type="password" class="form-control" name="password" required="1" style="width:200px;display:block; margin-left: 80px;">
 						</div>
 						<b></b>
 					</br>
@@ -62,7 +61,7 @@
 						</div>
 					</br>
 				</br>
-				<p class="bottom" style="color: white;">Don't have an account? <a class="bottom" href="{{url_for('register')}}"> Sign Up
+				<p class="bottom" style="color: black;">Don't have an account? <a class="bottom" href="{{url_for('register')}}"> Sign Up
 						here</a></p>
 
 				</form>
@@ -94,8 +93,8 @@
 	.modal-body {
 		width: 350px;
 		height: 450px;
-		background-color: rgba(41, 39, 39, 0.3);
-		box-shadow: 0 5px 30px black;
+		background-color: rgba(242, 234, 234, 0.935);
+		/* box-shadow: 0 5px 30px black; */
 	}
 
 	.btn2 {

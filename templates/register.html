@@ -34,35 +34,33 @@
   <div>
     <div>
       <div>
-        <div>
-          <h4 class="modal-title" style="color: white; margin-top: 40px;">Sign Up</h4>
-        </div>
-        </br>
         <div class="modal-body" style="display:inline-block; margin-top: 20px;">
 
           <form action="{{url_for('register')}}" method="POST">
-
-
+            <div>
+              <h4 class="modal-title" style="color: black; margin-top: 10px;">Sign Up</h4>
+            </div>
+          </br>
             <div class="form-group">
-              <label style="color: white;">Username:</label>
-              <input id="username" type="text" class="form-control" name="username" required="1">
+              <label style="color: black; font-size: 18px;">Username:</label>
+              <input id="username" type="text" class="form-control" name="username" required="1" style="width:200px;display:block; margin-left: 80px;">
             </div>
 
             </br>
             <div class="form-group">
-              <label style="color: white;">Email:</label>
-              <input id="email" type="email" class="form-control" name="email" required="1">
+              <label style="color: black; font-size: 18px;">Email:</label>
+              <input id="email" type="email" class="form-control" name="email" required="1" style="width:200px;display:block; margin-left: 80px;">
             </div>
             </br>
             <div class="form-group">
-              <label style="color: white;">Password:</label>
-              <input id="password" type="password" class="form-control" name="password" required="1">
+              <label style="color: black;font-size: 18px;">Password:</label>
+              <input id="password" type="password" class="form-control" name="password" required="1" style="width:200px;display:block; margin-left: 80px;">
             </div>
             <b></b>
             </br>
             <div class="form-group">
-              <label style="color: white;">Would you like to participate in the Book Club?</label>
-              <select id="participation" name="participation" class="form-control" required="1">
+              <label style="color: black; font-size: 18px; ">Would you like to participate in the Book Club?</label>
+              <select id="participation" name="participation" class="form-control" required="1" style="width:200px;display:block; margin-left: 80px;">
                 <option selected></option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -70,7 +68,7 @@
             </div>
             </br>
 
-            <p class="bottom" style="color: white;">Already have an account? <a class="bottom"
+            <p class="bottom" style="color: black;  font-size: 18px; margin-bottom: 5px;">Already have an account? <a class="bottom"
                 href="{{url_for('login')}}"> Sign In here</a></p>
 
 
@@ -109,10 +107,10 @@
   }
 
   .modal-body {
-    width: 350px;
-    height: 450px;
-    background-color: rgba(41, 39, 39, 0.3);
-    box-shadow: 0 5px 30px black;
+    width: 355px;
+    height: 560px;
+    background-color:  rgba(242, 234, 234, 0.935);
+    /* box-shadow: 0 5px 30px black; */
   }
 
   .btn2 {
