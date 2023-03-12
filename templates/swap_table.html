@@ -1,10 +1,3 @@
-{% extends 'base.html' %}
-
-
-{% block title %} Swap {% endblock %}
-
-
-{% block body %}
 <html>
 <head>
 <title>Swap Book</title>
@@ -20,46 +13,10 @@
         background-color: black;
         color: white;
     }
+
 </style>
 </head>
 <body>
-
-  <py-script>
-
-    import random
-    swapped_with =[]
-
-    def swap_table(l):
-      def shuffle_records(records):
-          shuffled_records = random.sample(records, len(records))
-          return shuffled_records
-
-      def book_swap(l):
-          records = [(record[0], record[3], record[5], record[2]) for record in l]
-          shuffled = shuffle_records(records)
-          swapped = set()
-          for i, record in enumerate(l):
-              while (record[0], shuffled[i][1]) in swapped or shuffled[i][1] == record[2] or shuffled[i][3] == record[3]:
-                  random.shuffle(shuffled)
-              record[3] = shuffled[i][1]
-              swapped.add((record[0], record[3]))
-              swapped_with.append([record[0],record[3]])
-          return l,swapped_with
-    
-      l, swapped_books = book_swap(l)
-      return l, swapped_books
-
-    l = [["ID 1" , "Title 1", "Main Owner 1", "New Owner 1", "BookId 1", "UserId 1"],
-         ["ID 2" , "Title 2", "Main Owner 2", "New Owner 2", "BookId 2", "UserId 2"],
-         ["ID 3" , "Title 3", "Main Owner 3", "New Owner 3", "BookId 3", "UserId 3"],
-         ["ID 4" , "Title 4", "Main Owner 4", "New Owner 4", "BookId 4", "UserId 4"],
-         ["ID 5" , "Title 5", "Main Owner 5", "New Owner 5", "BookId 5", "UserId 5"],
-         ["ID 6" , "Title 6", "Main Owner 6", "New Owner 6", "BookId 6", "UserId 6"]]
-
-    l, swapped_with = swap_table(l)
-  </py-script>
-
-
   <script>
     function updateTime() {
     const timer = document.getElementById("timer");
@@ -99,7 +56,7 @@
       enableButton.textContent = "SWAP";
       enableButton.disabled = false;
       enableButton.addEventListener("click", function(){
-        location.reload();
+        swap_table(l);
       })
     }
     
@@ -120,7 +77,7 @@
   // Call the updateTime function every second
   const intervalId = setInterval(updateTime, 1000);
   
-      </script>
+  </script>
     <!-- Header -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
     <div class="jumbotron">
@@ -140,7 +97,7 @@
     <div class="w3-row-padding w3-content" style="max-width:1400px">
       <div class="w3-twothird">
         <!-- Timer bar -->
-          <div class="w3-row-padding w3-content" style="max-width:1400px">
+          <div class="w3-row-padding w3-content w3-card-4" style="max-width:1400px">
             <div class="w3-container w3-animate-zoom w3-left-align">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h3>Time remaining: <span id="timer"></span></h3>
@@ -148,9 +105,9 @@
               </div>
             </div>
           </div>
-        <table class="table table-success table-striped table-hover" border="1">
+        <table class=" table w3-table w3-striped w3-border w3-hoverable w3-card-4">
           <thead>
-              <tr>
+              <tr class="w3-light-grey w3-large">
                   <!-- <th>ID</th> -->
                   <th>Id</th>
                   <th>Title</th>
@@ -158,37 +115,71 @@
                   <th>New Owner</th>
                   <th>Book Id</th>
                   <th>User Id</th>
-                   <th colspan="1">Actions</th>
               </tr>
           </thead>
         </table>
-        <py-script> 
-          for i in l:
-            print(i) 
-        </py-script>
       </div>
-      <div class="w3-third">
-        <div class="w3-container w3-light-grey">
-          <h2>Swapped Table</h2>
-          <table id="swapped-table" class="table table-success table-striped table-hover" border="1">
-            <thead>
-              <tr>
-                <th>Previous Owner</th>
-                <th>New Owner</th>
-              </tr>
-            </thead>
-          </table>
-          <p class="w3-justify"></p>
-        </div>
-        <py-script> 
-          for j in swapped_with:
-            print(j) 
-          </py-script>
-      </div>      
-      </div>
-      </div>    
+
+      <script>
+          var l = [
+                  ['ID 1', 'Title 1', 'Main Owner 1', 'New Owner 1', 'BookId 1', 'UserId 1'],
+                  ['ID 2', 'Title 2', 'Main Owner 2', 'New Owner 3', 'BookId 2', 'UserId 2'],
+                  ['ID 3', 'Title 3', 'Main Owner 3', 'New Owner 6', 'BookId 3', 'UserId 3'],
+                  ['ID 4', 'Title 4', 'Main Owner 4', 'New Owner 4', 'BookId 4', 'UserId 4'],
+                  ['ID 5', 'Title 5', 'Main Owner 5', 'New Owner 2', 'BookId 5', 'UserId 5'],
+                  ['ID 6', 'Title 6', 'Main Owner 6', 'New Owner 5', 'BookId 6', 'UserId 6']
+                ]
+
+          var table = document.getElementsByClassName('table')[0];
+
+          var tbody = document.createElement('tbody');
+
+          for (var row in l){
+              var tr = document.createElement('tr');
+              for (var data in l[row]){
+                  var td = document.createElement('td');
+                  td.innerHTML = l[row][data];
+                  tr.appendChild(td);
+              }
+              tbody.appendChild(tr);
+          }
+          table.appendChild(tbody);
+      </script>
+
+<div class="w3-third">
+    <div class="w3-container">
+      <h2 class="w3-dark-grey w3-card-4">Swapped Table</h2>
+      <table class="w3-table w3-striped w3-border w3-hoverable w3-card-4" id="swapped-table">
+        <thead >
+          <tr class="w3-light-grey w3-large">
+            <th>Previous Owner</th>
+            <th>New Owner</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <p class="w3-justify"></p>
     </div>
+  </div>
+    <script>
+      var list = [['ID 1', 'New Owner 2'], ['ID 2', 'New Owner 3'], ['ID 3', 'New Owner 6'], ['ID 4', 'New Owner 1'], ['ID 5', 'New Owner 4'], ['ID 6', 'New Owner 5']]
+    
+      var table = document.getElementById('swapped-table');
+      var tbody = table.getElementsByTagName('tbody')[0];
+    
+      for (var i = 0; i < list.length; i++) {
+        var row = document.createElement('tr');
+        var cell1 = document.createElement('td');
+        var cell2 = document.createElement('td');
+        cell1.innerHTML = list[i][0];
+        cell2.innerHTML = list[i][1];
+        row.appendChild(cell1);
+        row.appendChild(cell2);
+        tbody.appendChild(row);
+      }
+    </script>
+      </div>      
 </body>
 </html>
-
-{% endblock %}
+</body>
+</html>
