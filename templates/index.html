@@ -8,13 +8,15 @@
 <h3>
     Hi {{session.username}}!</br> Welcome to the Book Exchange!
 
-</h1></br></br>
+</h3></br></br>
 {% if session %}
 
 <a href="{{ url_for('logout') }}" class="btn btn-success">Logout</a>
 <a class="btn btn-success" href="{{url_for('show')}}">Show all Books</a>
 <a href="/update_profile/{{session.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{session.id}}">Update Profile</a>
 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</button>
+<a href="/choose_book" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalchoose">Choose book</a>
+
 {% endif %}
 
     <div class="container mt-4">
@@ -145,22 +147,27 @@
 
 </div>
 
+      {% endif %}
+{% endfor %}
 
 
+{% for book in books %}
+
+   {% if book.userid == session.id %}
 
    <!-- choose book model -->
-   <div id="modalchoose{{book.id}}" class="modal fade" role="dialog">
+   <div id="modalchoose" class="modal fade" role="dialog">
       <div class="modal-dialog">
          <div class="modal-content">
             <div class="modal-header">
-               <h4 class="modal-title">Update Book</h4>
+               <h4 class="modal-title">Choose Book</h4>
             </div>
             <div class="modal-body">
    
                <form action="{{url_for('choose_book')}}" method="POST">
    
    
-                  <div class="form-group">
+                  <!-- <div class="form-group">
    
                      <label>Are you sure you want to choose this book?</label>
    
@@ -168,24 +175,18 @@
                     <input type="hidden"  name="title" value="{{book.title}}">
                      <input type="text" class="form-control" name="title" value="{{book.title}}" >
    
-                  </div>
-   
-   
-   
-                   <!-- <div class="form-group">
-                     <label>Author:</label>
-                     <input type="text" class="form-control" name="author" value="{{book.author}}">
-                  </div>
-   
-                    <div class="form-group">
-                     <label>Category:</label>
-                     <input type="text" class="form-control" name="category" value="{{book.category}}">
-                  </div>
-   
-                  <div class="form-group">
-                     <label>Imafe Link:</label>
-                     <input type="text" class="form-control" name="image_link" value="{{book.image_link}}">
                   </div> -->
+
+                  <div class="form-group">
+                     <label>Choose from your books:</label>
+                     <select id="category" name="category" class="form-control" required>
+                        <option selected>  </option>
+                        <option>{{book.title}} <input type="hidden"  name="title" value="{{book.title}}"> <input type="hidden"  name="bookid" value="{{book.id}}"> </option>
+                      </select>
+                     <!-- <input type="text" class="form-control" name="category" > -->
+                  </div>
+   
+
    
                   <div class="form-group">
                      <button class="btn btn-primary mt-4" type="submit">Choose Book</button>
@@ -212,8 +213,10 @@
    
    </div>
 
-                     {% endif %}
-                {% endfor %}
+   {% endif %}
+   {% endfor %}
+
+                     
             </tbody>
         </table>
     </div>
@@ -256,7 +259,7 @@
                   <div class="form-group">
                      <label>Participation</label>
                      <select class="form-control" id="participation" name="participation" value="{{user.participation}}">
-                        <option selected>   </option>
+                        <option selected>{{user.participation}}</option>
                         <option value="yes">Yes</option>
                         <option value="no">No</option>
                     </select>

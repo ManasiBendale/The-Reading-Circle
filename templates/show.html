@@ -5,15 +5,16 @@
 
 
 {% block body %}
-<h1>
-    Hi {{session.username}} {{session.id}}!!</br></br> Welcome to the index page...
+<h3>
+    Hi {{session.username}}!</br></br> Welcome to the show all books page...
 
-</h1></br></br></br>
+</h3></br></br></br>
 {% if session %}
-<a href="{{ url_for('logout') }}" class="btn">Logout</a>
-<button class="btn btn-success"><a class="bottom" href="{{url_for('index')}}">Go back to User page</a></button>
+
+<a href="{{ url_for('logout') }}" class="btn btn-success">Logout</a>
+<a class="btn btn-success" href="{{url_for('index')}}">Go back</a>
+
 {% endif %}
-<!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</button> -->
 
 
     <div class="container mt-4">
@@ -30,25 +31,25 @@
         <table class="table table-success table-striped table-hover" border="1">
             <thead>
                 <tr>
-                    <!-- <th>ID</th> -->
                     <th>Title</th>
                     <th>Author</th>
+                    <th>Summary</th>
                     <th>Category</th>
-                    <!-- <th>Image link</th> -->
-                    <th>Owner</th>
+                    <th>Rating</th>
+                    <!-- <th>Current Owner</th> -->
                      <th colspan="2">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for book in books %}
-
+                  
                    <tr>
                         <td>{{book.title}}</td>
                         <td>{{book.author}}</td>
+                        <td>{{book.summary}}</td>
                         <td>{{book.category}}</td>
-                        <!-- <td>{{book.image_link}}</td> -->
-                        <td>{{book.userid}}</td>
-
+                        <td>{{book.rating}}</td>
+                        
                         <td>
                             <!-- <a href="/update/{{book.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{book.id}}">Update</a> -->
                              <a href="/request" class="btn btn-danger" onclick="return confirm('Are you sure you to request this book?')">Request</a>
@@ -56,144 +57,6 @@
                     </tr>
 
 
-                     <!-- update model -->
- <div id="modaledit{{book.id}}" class="modal fade" role="dialog">
-   <div class="modal-dialog">
-      <div class="modal-content">
-         <div class="modal-header">
-            <h4 class="modal-title">Update Book</h4>
-         </div>
-         <div class="modal-body">
-
-            <form action="{{url_for('update')}}" method="POST">
-
-
-               <div class="form-group">
-
-                  <label>Title:</label>
-		           <input type="hidden"  name="id" value="{{book.id}}">
-                  <input type="text" class="form-control" name="title" value="{{book.title}}" >
-
-               </div>
-
-
-
-                <div class="form-group">
-                  <label>Author:</label>
-                  <input type="text" class="form-control" name="author" value="{{book.author}}">
-               </div>
-
-                 <div class="form-group">
-                  <label>Category:</label>
-                  <input type="text" class="form-control" name="category" value="{{book.category}}">
-               </div>
-
-               <div class="form-group">
-                  <label>Imafe Link:</label>
-                  <input type="text" class="form-control" name="image_link" value="{{book.image_link}}">
-               </div>
-
-               <div class="form-group">
-                  <button class="btn btn-primary mt-4" type="submit">Update Book</button>
-               </div>
-
-
-            </form>
-
-
-         </div>
-
-
-         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-         </div>
-
-
-      </div>
-
-
-   </div>
-
-
-</div>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-
-
-
-    <!-- Modal  for inserting the book -->
- <div id="insert_modal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-       <div class="modal-content">
-          <div class="modal-header">
-             <h4 class="modal-title">Add Book</h4>
-          </div>
-          <div class="modal-body">
- 
-             <form action="{{url_for('insert_book')}}" method="POST">
- 
- 
-                <div class="form-group">
-                  <label>Title:</label>
-                  <input type="text" class="form-control" name="title" required="1">
-               </div>
-
-
-                <div class="form-group">
-                  <label>Author:</label>
-                  <input type="text" class="form-control" name="author" required="1">
-               </div>
-
-               <div class="form-group">
-                  <label>Summary:</label>
-                  <!-- <input type="text" class="form-control" name="image_link" placeholder="Give a short summary of the book you read..." required="1"> -->
-                  <textarea class="form-control" name="summary" id="summary" placeholder="Give a short summary of the book you read..." required="1"></textarea>
-               </div>
-
-               <div class="form-group">
-                  <label>Category:</label>
-                  <select id="category" name="category" class="form-control" required="1">
-                    <option selected></option>
-                    <option value="fiction">Fiction</option>
-                    <option value="education">Education</option>
-                    <option value="mystery">Mystery</option>
-                    <option value="scifi">Science Fiction</option>
-                    <option value="history">History</option>
-                    <option value="romance">Romance</option>
-                    <option value="crime">Crime</option>
-                    <option value="comedy">Comedy</option>
-                  </select>
-                  <!-- <input type="text" class="form-control" name="category" required="1"> -->
-               </div>
-
-               <div class="form-group">
-                 <label>Rating:</label>
-                 <input type="text" class="form-control" name="rating" required="1">
-              </div>
-
-                <div class="form-group">
-                   <button class="btn btn-primary mt-4" type="submit">Add Book</button>
-                </div>
- 
- 
-             </form>
- 
- 
-          </div>
- 
- 
-          <div class="modal-footer">
-             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
- 
-          </div>
- 
-       </div>
-    </div>
- 
- </div>
-
+                  
+               {% endfor %}
 {% endblock %}

@@ -48,7 +48,6 @@ class Book(db.Model):
     category = db.Column(db.String(100), nullable=False)
     rating = db.Column(db.String(100), nullable=False)
     image_link = db.Column(db.String(100), nullable=False)
-    # image_link = db.Column(db.LargeBinary, nullable=True)
     userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __init__(self, title, author, category, image_link, userid, summary, rating):
@@ -259,6 +258,7 @@ def delete(id):
 @app.route('/choose_book/', methods=['POST'])
 def choose_book():
     if request.method == "POST":
+        my_data = Book.query.get(request.form.get('id'))
 
         book = Swap(
             title=request.form.get('title'),
