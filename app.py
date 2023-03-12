@@ -6,6 +6,7 @@ import MySQLdb.cursors
 import re
 from passlib.hash import sha256_crypt
 import base64
+from jinja2 import Environment
 
 app = Flask(__name__)
 
@@ -83,8 +84,8 @@ def main():
     return render_template('main.html')
 
 
-@app.route('/swap')
-def swap():
+@app.route('/check_swap')
+def check_swap():
     # books = Book.query.all()
     return render_template('swap.html')
 
@@ -106,6 +107,11 @@ def show():
 
 @app.route('/index')
 def index():
+    def b64encode(data):
+        return base64.b64encode(data).decode('utf-8')
+
+    env = Environment()
+    env.filters['b64encode'] = b64encode
     books = Book.query.all()
     users = User.query.all()
     swaps = Swap.query.all()
@@ -202,9 +208,11 @@ def update_profile():
 def insert_book():
 
     if request.method == "POST":
-        pdf_file = request.files['pdf']
-        pdf_data = pdf_file.read()
-        pdf_data_b64 = base64.b64encode(pdf_data)
+        image_file = request.files['pdf']
+        # with open(pdf_file, 'rb') as f:
+        #     image_data = f.read()
+        image_data = image_file.read()
+        # pdf_data_b64 = base64.b64encode(pdf_data).decode("utf-8")
 
         book = Book(
             title=request.form.get('title'),
@@ -212,21 +220,13 @@ def insert_book():
             summary=request.form.get('summary'),
             category=request.form.get('category'),
             rating=request.form.get('rating'),
-            # image_link=request.form.get('image_link'),
-            image_link=pdf_data_b64,
+            image_link=image_data,
             userid=session['id']
         )
         db.session.add(book)
         db.session.commit()
         flash("Book added successfully")
         return redirect(url_for('index'))
-
-
-# @app.route('/view-pdf')
-# def view_pdf():
-#     pdf_id = request.args.get('image_link')
-#     pdf = Book.query.filter_by(image_link=pdf_id).first()
-#     return Response(pdf.data, mimetype='application/pdf')
 
 
 @app.route('/update/', methods=['POST'])
@@ -244,6 +244,14 @@ def update():
         db.session.commit()
         flash("Book is updated")
         return redirect(url_for('index'))
+
+
+# @app.route('/view/', methods=['POST'])
+# def view_book():
+#     if request.method == "POST":
+#         # my_data = Book.query.get(request.form.get('id'))
+#         books = Book.query.all()
+#     return render_template('index.html', books=books)
 
 
 @app.route('/delete/<id>/', methods=['GET', 'POST'])

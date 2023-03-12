@@ -18,7 +18,8 @@
 
 {% for user in users %}
    {% if user.id == session.id and user.participation == 'yes' %}
-      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Check Swap Book Page</button>
+      <!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Check Swap Book Page</button> -->
+      <a href="{{ url_for('check_swap') }}" class="btn btn-success">Check Swap Book Page</a>
    {% endif %}
 {% endfor %}
 
@@ -69,6 +70,8 @@
                         <td>
                            <a href="/update/{{book.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{book.id}}">Update</a>
                            <a href="/delete/{{book.id}}" class="btn btn-danger" onclick="return confirm('Are you sure to delete ?')">Delete</a>
+                           <a class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalview{{book.id}}">View</a>
+                           
                            <!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#choose_modal">Choose Book</button> -->
 
                            {% if session.participation == 'yes' %}
@@ -139,6 +142,61 @@
 
 
             </form>
+
+
+         </div>
+
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+         </div>
+
+
+      </div>
+
+
+   </div>
+
+
+</div>
+
+
+<!-- View Book model -->
+<div id="modalview{{book.id}}" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">{{book.title}}</h4>
+         </div>
+         <div class="modal-body" style="text-align: center;">
+
+               <div class="form-group">
+                  <!-- <label>Image:</label>  -->                  
+                  <img src="data:image/jpeg;base64,{{ book.image_link }}" />
+               </div>
+
+
+                <div class="form-group">
+                  <label>Author:</label> {{book.author}}
+               </div>
+
+               <div class="form-group">
+                  <label>Summary:</label> {{book.summary}}
+                  <!-- <textarea class="form-control" id="summary" name="summary" rows="4" cols="50"  required="1"></textarea> -->
+               </div>
+
+                 <div class="form-group">
+                  <label>Category:</label> {{book.category}}
+                  
+               </div>
+
+               <div class="form-group">
+                  <label>Rating:</label> {{book.rating}}
+               </div>
+
+               
+
 
 
          </div>
