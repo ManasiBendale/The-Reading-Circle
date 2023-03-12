@@ -1,4 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, Response
+import os
+import requests
+from flask import Flask, request, send_file
+from flask import Flask, render_template, request, redirect, send_from_directory, url_for, flash, session, Response
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from flask_mysqldb import MySQL
@@ -9,21 +12,29 @@ import base64
 
 app = Flask(__name__)
 
-app.jinja_env.filters['zip'] = zip
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'test3'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test3'
+# app.jinja_env.filters['zip'] = zip
+# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_USER'] = 'root'
+# app.config['MYSQL_PASSWORD'] = ''
+# app.config['MYSQL_DB'] = 'test1'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test1'
+
+app.config['MYSQL_HOST'] = 'flaskdb.ccmebdkxgfmf.us-west-1.rds.amazonaws.com'
+app.config['MYSQL_USER'] = 'admin'
+app.config['MYSQL_PASSWORD'] = 'Sanjose$2023'
+app.config['MYSQL_DB'] = 'flaskaws'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:Sanjose$2023@flaskdb.ccmebdkxgfmf.us-west-1.rds.amazonaws.com/flaskaws'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "somethingunique"
 
 
+engine = create_engine('mysql://admin:Sanjose$2023@flaskdb.ccmebdkxgfmf.us-west-1.rds.amazonaws.com/flaskaws')
+connection = engine.raw_connection()
+# cursor = connection.cursor()
 db = SQLAlchemy(app)
 mysql = MySQL(app)
-
-
+# db = MySQL(app)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
@@ -60,7 +71,6 @@ class Book(db.Model):
         self.rating = rating
         self.userid = userid
 
-
 class Swap(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -75,7 +85,6 @@ class Swap(db.Model):
         self.new_owner = new_owner
         self.bookid = bookid
         self.userid = userid
-
 
 @app.route('/')
 @app.route('/main')
@@ -219,6 +228,14 @@ def insert_book():
         )
         db.session.add(book)
         db.session.commit()
+        
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute(
+            'SELECT image_link FROM book WHERE id = %s',[book.id])
+        file_path = os.path.join(os.path.expanduser("/Users/manasibendale/Desktop/images"), f"{book.title}_{book.id}.png")
+        with open(file_path, "wb") as f:
+            f.write(pdf_data_b64)
+        mysql.connection.commit()
         flash("Book added successfully")
         return redirect(url_for('index'))
 
