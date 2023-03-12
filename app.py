@@ -8,22 +8,22 @@ from passlib.hash import sha256_crypt
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:<password>@localhost:3306/<database_name>'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:''@localhost:3306/mydatabase'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://'
 app.config['SQLALCHEMY_USER'] = 'root'
-app.config['SQLALCHEMY_PASSWORD'] = '<password>'
+app.config['SQLALCHEMY_PASSWORD'] = ''
 app.config['SQLALCHEMY_HOST'] = 'localhost'
 app.config['SQLALCHEMY_PORT'] = 3306
-app.config['SQLALCHEMY_DATABASE_NAME'] = '<database_name>'
+app.config['SQLALCHEMY_DATABASE_NAME'] = 'mydatabase'
 
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "somethingunique"
 
 
-# engine = create_engine('mysql://root:''@localhost/flaskaws')
-# connection = engine.raw_connection()
+engine = create_engine('mysql://root:''@localhost/mydatabase')
+connection = engine.raw_connection()
 # cursor = connection.cursor()
 db = SQLAlchemy(app)
 mysql = MySQL(app)

@@ -24,6 +24,103 @@
 </head>
 <body>
 
+  <py-script>
+
+    import random
+    swapped_with =[]
+
+    def swap_table(l):
+      def shuffle_records(records):
+          shuffled_records = random.sample(records, len(records))
+          return shuffled_records
+
+      def book_swap(l):
+          records = [(record[0], record[3], record[5], record[2]) for record in l]
+          shuffled = shuffle_records(records)
+          swapped = set()
+          for i, record in enumerate(l):
+              while (record[0], shuffled[i][1]) in swapped or shuffled[i][1] == record[2] or shuffled[i][3] == record[3]:
+                  random.shuffle(shuffled)
+              record[3] = shuffled[i][1]
+              swapped.add((record[0], record[3]))
+              swapped_with.append([record[0],record[3]])
+          return l,swapped_with
+    
+      l, swapped_books = book_swap(l)
+      return l, swapped_books
+
+    l = [["ID 1" , "Title 1", "Main Owner 1", "New Owner 1", "BookId 1", "UserId 1"],
+         ["ID 2" , "Title 2", "Main Owner 2", "New Owner 2", "BookId 2", "UserId 2"],
+         ["ID 3" , "Title 3", "Main Owner 3", "New Owner 3", "BookId 3", "UserId 3"],
+         ["ID 4" , "Title 4", "Main Owner 4", "New Owner 4", "BookId 4", "UserId 4"],
+         ["ID 5" , "Title 5", "Main Owner 5", "New Owner 5", "BookId 5", "UserId 5"],
+         ["ID 6" , "Title 6", "Main Owner 6", "New Owner 6", "BookId 6", "UserId 6"]]
+
+    l, swapped_with = swap_table(l)
+  </py-script>
+
+
+  <script>
+    function updateTime() {
+    const timer = document.getElementById("timer");
+    const enableButton = document.getElementById("enableButton");
+    const container = document.querySelector(".w3-container");
+  
+    // Set the end date to 30 days from now
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 0);
+  
+    // Calculate the remaining time in milliseconds
+    const remainingTime = endDate.getTime() - new Date().getTime();
+  
+    // Convert remaining time to days, hours, minutes, and seconds
+    let remainingSeconds = Math.ceil(remainingTime / 1000);
+    const remainingMinutes = Math.floor(remainingSeconds / 60);
+    const remainingHours = Math.floor(remainingMinutes / 60);
+    const remainingDays = Math.floor(remainingHours / 24);
+  
+    // Calculate the remaining time as a string
+    const remainingTimeString = `${remainingDays}d ${remainingHours % 24}h ${remainingMinutes % 60}m ${remainingSeconds % 60}s`;
+  
+    // Update the timer element with the remaining time
+    timer.innerHTML = remainingTimeString;
+  
+    // Change background color of the container based on remaining time
+    if (remainingDays <= 5) {
+      container.style.backgroundColor = "red";
+    } else if (remainingDays <= 10) {
+      container.style.backgroundColor = "yellow";
+    } else {
+      container.style.backgroundColor = "green";
+    }
+  
+    // Enable the button after 30 days
+    if (remainingTime <= 0) {
+      enableButton.textContent = "SWAP";
+      enableButton.disabled = false;
+      enableButton.addEventListener("click", function(){
+        location.reload();
+      })
+    }
+    
+    // Display countdown of hours, minutes, and seconds
+    const minutesString = `${(remainingMinutes % 60).toString().padStart(2, "0")}:`;
+    const secondsString = `${(remainingSeconds % 60).toString().padStart(2, "0")}`;
+    timer.innerHTML = `${hoursString}${minutesString}${secondsString}`;
+  
+    // Stop the timer when remaining time reaches 0
+    if (remainingTime <= 0) {
+      clearInterval(intervalId);
+      timer.innerHTML = `00:00:00 (0d 0h 0m 0s)`;
+    }
+  
+    remainingSeconds--;
+  }
+  
+  // Call the updateTime function every second
+  const intervalId = setInterval(updateTime, 1000);
+  
+      </script>
     <!-- Header -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
     <div class="jumbotron">
@@ -40,66 +137,6 @@
         </div>
     </div>
 
-    <script>
-  function updateTime() {
-  const timer = document.getElementById("timer");
-  const enableButton = document.getElementById("enableButton");
-  const container = document.querySelector(".w3-container");
-
-  // Set the end date to 30 days from now
-  const endDate = new Date();
-  endDate.setDate(endDate.getDate() + 30);
-
-  // Calculate the remaining time in milliseconds
-  const remainingTime = endDate.getTime() - new Date().getTime();
-
-  // Convert remaining time to days, hours, minutes, and seconds
-  let remainingSeconds = Math.ceil(remainingTime / 1000);
-  const remainingMinutes = Math.floor(remainingSeconds / 60);
-  const remainingHours = Math.floor(remainingMinutes / 60);
-  const remainingDays = Math.floor(remainingHours / 24);
-
-  // Calculate the remaining time as a string
-  const remainingTimeString = `${remainingDays}d ${remainingHours % 24}h ${remainingMinutes % 60}m ${remainingSeconds % 60}s`;
-
-  // Update the timer element with the remaining time
-  timer.innerHTML = remainingTimeString;
-
-  // Change background color of the container based on remaining time
-  if (remainingDays <= 5) {
-    container.style.backgroundColor = "red";
-  } else if (remainingDays <= 10) {
-    container.style.backgroundColor = "yellow";
-  } else {
-    container.style.backgroundColor = "green";
-  }
-
-  // Enable the button after 30 days
-  if (remainingTime <= 0) {
-    enableButton.textContent = "SWAP";
-    enableButton.disabled = false;
-  }
-
-  // Display countdown of hours, minutes, and seconds
-  const minutesString = `${(remainingMinutes % 60).toString().padStart(2, "0")}:`;
-  const secondsString = `${(remainingSeconds % 60).toString().padStart(2, "0")}`;
-  timer.innerHTML = `${hoursString}${minutesString}${secondsString}`;
-
-  // Stop the timer when remaining time reaches 0
-  if (remainingTime <= 0) {
-    clearInterval(intervalId);
-    timer.innerHTML = `00:00:00 (0d 0h 0m 0s)`;
-  }
-
-  remainingSeconds--;
-}
-
-// Call the updateTime function every second
-const intervalId = setInterval(updateTime, 1000);
-
-    </script>
-    
-    <!-- Info text -->
     <div class="w3-row-padding w3-content" style="max-width:1400px">
       <div class="w3-twothird">
         <!-- Timer bar -->
@@ -115,53 +152,42 @@ const intervalId = setInterval(updateTime, 1000);
           <thead>
               <tr>
                   <!-- <th>ID</th> -->
+                  <th>Id</th>
                   <th>Title</th>
-                  <th>Author</th>
-                  <th>Category</th>
-                  <th>Image link</th>
+                  <th>Main Owner</th>
+                  <th>New Owner</th>
+                  <th>Book Id</th>
+                  <th>User Id</th>
                    <th colspan="1">Actions</th>
               </tr>
           </thead>
-          <tbody>
-              {% for book in books %}
-    
-                   {% if book.userid == session.id %}
-                  <tr>
-                      <!-- <td>{{book.id}}</td> -->
-                      <td>{{book.title}}</td>
-                      <td>{{book.author}}</td>
-                      <td>{{book.category}}</td>
-                      <td>{{book.image_link}}</td>
-                      <td>
-                         <a href="/update/{{book.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{book.id}}">Update</a>    
-                      </td>
-                  </tr>
-              {% endif %}
-          {% endfor %}
-          </tbody>
         </table>
+        <py-script> 
+          for i in l:
+            print(i) 
+        </py-script>
       </div>
       <div class="w3-third">
         <div class="w3-container w3-light-grey">
-            <h2>Our Mission:</h2>
-          <p>At Random Swap, we believe that reading should be a shared experience. By connecting book lovers around the world, we hope to promote the joy of reading and help users discover new authors and genres. We're committed to creating a safe, welcoming community where users can share their love of books and connect with like-minded individuals.</p>
+          <h2>Swapped Table</h2>
+          <table id="swapped-table" class="table table-success table-striped table-hover" border="1">
+            <thead>
+              <tr>
+                <th>Previous Owner</th>
+                <th>New Owner</th>
+              </tr>
+            </thead>
+          </table>
           <p class="w3-justify"></p>
         </div>
-        <br>
-        <div class="w3-container w3-light-grey w3-justify">
-            <h2>About:</h2>
-            <p>Welcome to Random Swap, the platform that brings book lovers together for unexpected discoveries and swaps! With Random Swap, you never know what book you'll get next, but you can be sure that every swap is an opportunity to connect with other book lovers and discover new worlds.</p>
-          <p class="w3-justify"></p>
-        </div>
-        <br>
-        <div class="w3-container w3-light-grey w3-justify">
-            <h2>How it works:</h2>
-            <p>In Random Swap, members share books with each other. When you receive a book and finish reading it, the club wil know that you have read so you won't recieve the same book again. Please note that there is a one-month time limit to read each book.</p>
-            <p class="w3-justify"></p>
-        </div>
+        <py-script> 
+          for j in swapped_with:
+            print(j) 
+          </py-script>
+      </div>      
       </div>
+      </div>    
     </div>
-    
 </body>
 </html>
 
