@@ -261,13 +261,22 @@ def choose_book():
         my_data = Book.query.get(request.form.get('id'))
 
         book = Swap(
-            title=request.form.get('title'),
+            title="Need to fill",
             main_owner=session['username'],
             new_owner=session['username'],
             bookid=request.form.get('bookid'),
             userid=session['id']
         )
         db.session.add(book)
+        # my_data = Book.query.get('book.bookid')
+        # swapid = Swap.query.filter_by(bookid=3).first()
+        # swapbookid = swapid.bookid
+        # bookid = Book.query.filter_by(id=swapbookid).first()
+        # booktitle = bookid.title
+
+        # print(booktitle)
+        # print(bookid)
+        # book.title = my_data.title
         db.session.commit()
         flash("Book chosen successfully!", "success")
         return redirect(url_for('index'))

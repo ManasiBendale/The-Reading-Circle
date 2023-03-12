@@ -15,7 +15,18 @@
 <a class="btn btn-success" href="{{url_for('show')}}">Show all Books</a>
 <a href="/update_profile/{{session.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{session.id}}">Update Profile</a>
 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</button>
-<a href="/choose_book" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalchoose">Choose book</a>
+
+{% for user in users %}
+   {% if user.id == session.id and user.participation == 'yes' %}
+      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Check Swap Book Page</button>
+   {% endif %}
+{% endfor %}
+
+{% for swap in swaps %}
+   {% if swap.userid != session.id%}
+      <a href="/choose_book" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalchoose">Choose book</a>
+   {% endif %}
+{% endfor %}
 
 {% endif %}
 
@@ -151,9 +162,7 @@
 {% endfor %}
 
 
-{% for book in books %}
 
-   {% if book.userid == session.id %}
 
    <!-- choose book model -->
    <div id="modalchoose" class="modal fade" role="dialog">
@@ -167,23 +176,18 @@
                <form action="{{url_for('choose_book')}}" method="POST">
    
    
-                  <!-- <div class="form-group">
-   
-                     <label>Are you sure you want to choose this book?</label>
-   
-                    <input type="hidden"  name="bookid" value="{{book.id}}">
-                    <input type="hidden"  name="title" value="{{book.title}}">
-                     <input type="text" class="form-control" name="title" value="{{book.title}}" >
-   
-                  </div> -->
 
-                  <!-- <p>{{book.title}}</p> -->
 
                   <div class="form-group">
                      <label>Choose from your books:  </label>
-                     <select id="category" name="category" class="form-control" required>
-                        <option selected>  </option>
-                        <option>{{book.title}}<input type="hidden"  name="title" value="{{book.title}}"> <input type="hidden"  name="bookid" value="{{book.id}}"> </option>
+                     
+                     <select class="form-control" name="bookid" id="bookid">                       
+                        <option selected>  </option>                        
+                        {% for book in books %}
+                              {% if book.userid == session.id %}
+                                 <option value="{{book.id}}">{{book.title}}</option>
+                              {% endif %}
+                        {% endfor %}
                       </select>
                      <!-- <input type="text" class="form-control" name="category" > -->
                   </div>
@@ -215,8 +219,7 @@
    
    </div>
 
-   {% endif %}
-   {% endfor %}
+  
 
                      
             </tbody>
