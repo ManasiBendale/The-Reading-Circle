@@ -8,71 +8,113 @@
 {% block body %}
 
 {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-success" role="alert">
-                        {{message}}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-success" role="alert">
+	{{message}}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
 
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title> Register </title>
-		<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">			 -->
-	</head>
-	<body>
-		<!-- Modal for Signing Up -->
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="style.css">
+	<title> Login </title>
+	<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">			 -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+	<!-- Modal for Signing Up -->
+	<div>
 		<div>
 			<div>
-			   <div>
-				  <div>
-					 <h4 class="modal-title">Login</h4>
-				  </div>
-				  <div class="modal-body">
-		 
-					 <form action="{{url_for('login')}}" method="POST">
-		 
-		 
+				<div>
+					<h4 class="modal-title" style="color: white; margin-top: 40px;">Login</h4>
+				</div>
+				</br>
+				<div class="modal-body" style="display:inline-block; margin-top: 20px;">
+
+					<form action="{{url_for('login')}}" method="POST">
+
+
 						<div class="form-group">
-						   <label>Username:</label>
-						   <input id="username" type="text" class="form-control" name="username" required="1">
+							<label style="color: white; margin-top: 35px; font-size: 20px; margin-bottom: 15px;">Username:</label>
+							<input id="username" type="text" class="form-control" name="username" required="1">
 						</div>
-		 
-		 
-						  <div class="form-group">
-						   <label>Password:</label>
-						   <input id="password" type="password" class="form-control" name="password" required="1">
+					</br>
+
+						<div class="form-group">
+							<label style="color: white; font-size: 20px; margin-bottom: 15px;">Password:</label>
+							<input id="password" type="password" class="form-control" name="password" required="1">
 						</div>
 						<b></b>
-		 
-		 
+					</br>
+
 						<div class="form-group">
-						   <button class="btn btn-primary mt-4" type="submit">Login</button>
+							<button class="btn btn-primary mt-4 btn2" type="submit">Login</button>
+							<a href="{{url_for('main')}}" class="btn btn-primary mt-4 btn2">Home Page</a>
 						</div>
-		 
-		 
-					 </form>
-		 
-		 
-				  </div>
-		 
-			<p class="bottom">Don't have an account? <a class="bottom" href="{{url_for('register')}}"> Sign Up here</a></p>
-				  
-				  <div class="modal-footer">
-					 <button type="button" class="btn btn-secondary"><a href="{{url_for('main')}}">Close</a></button>
-		 
-				  </div>
-		 
-			   </div>
+					</br>
+				</br>
+				<p class="bottom" style="color: white;">Don't have an account? <a class="bottom" href="{{url_for('register')}}"> Sign Up
+						here</a></p>
+
+				</form>
+
 			</div>
-		 
-		 </div>
+			</div>
+		</div>
 
-	</body>
+	</div>
+	<script src="jQuery.js"></script>
+</body>
+
 </html>
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
 
+	body {
+		font-family: Arial, Helvetica, sans-serif;
+		background-image: url(/static/lib.jpeg);
+		background-size: cover;
+		background-attachment: fixed;
+		text-align: center;
+	}
+
+	.modal-body {
+		width: 350px;
+		height: 450px;
+		background-color: rgba(41, 39, 39, 0.3);
+		box-shadow: 0 5px 30px black;
+	}
+
+	.btn2 {
+		padding: 10px;
+		width: 150px;
+		border-radius: 20px;
+		background-color: rgb(10, 136, 43);
+		border-style: none;
+		color: white;
+		font-weight: 600;
+	}
+
+	.btn2:hover {
+		background-color: rgba(10, 136, 43, 0.5);
+	}
+
+	.btn button:hover {
+		border-bottom: 2px solid rgb(91, 243, 131);
+	}
+</style>
 
 {% endblock %}
