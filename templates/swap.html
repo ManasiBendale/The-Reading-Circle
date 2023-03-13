@@ -26,7 +26,7 @@
   
     // Set the end date to 30 days from now
     const endDate = new Date();
-    endDate.setDate(endDate.getDate() + 0);
+    endDate.setDate(endDate.getDate() + 30);
   
     // Calculate the remaining time in milliseconds
     const remainingTime = endDate.getTime() - new Date().getTime();
@@ -54,8 +54,6 @@
   
     // Enable the button after 30 days
     if (remainingTime <= 0) {
-      enableButton.textContent = "SWAP";
-      enableButton.disabled = false;
     }
     
     // Display countdown of hours, minutes, and seconds
@@ -93,7 +91,7 @@
         </div>
     </div>
 
-    <div class="w3-row-padding w3-content" style="max-width:1400px">
+    <div class="w3-row-padding w3-content" style="max-width:1400px; display: flex; justify-content: center;">
       <div class="w3-twothird">
         <!-- Timer bar -->
           <div class="w3-row-padding w3-content w3-card-4" style="max-width:1400px">
@@ -136,29 +134,7 @@
 
     
 
-<div class="w3-third">
-    <div class="w3-container">
-      <h2 class="w3-dark-grey w3-card-4">Swapped Table</h2>
-      <table class="w3-table w3-striped w3-border w3-hoverable w3-card-4" id="swapped-table">
-        <thead >
-          <tr class="w3-light-grey w3-large">
-            <th>Previous Owner</th>
-            <th>New Owner</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for swap in swaps %}
 
-                <tr>
-                    <td>{{swap.main_owner}}</td>
-                    <td>{{swap.new_owner}}</td>
-                </tr>
-                {% endfor %}
-        </tbody>
-      </table>
-      <p class="w3-justify"></p>
-    </div>
-  </div>
 
       </div>      
 </body>
