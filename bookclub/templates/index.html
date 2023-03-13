@@ -1,0 +1,544 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Home {% endblock %}
+
+
+{% block body %}
+{% if session %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+   <div class="container">
+     <b><a class="navbar-brand" href="{{url_for('index')}}">Home</a></b>
+     <ul class="navbar-nav mr-auto">
+
+         <li class="nav-item"> 
+            <b><a class="nav-link" data-bs-toggle="modal" data-bs-target="#meeting_modal">Meeting Point</a></b>
+         </li>&nbsp;&nbsp;
+
+         
+         <li class="nav-item"> 
+            <b><a class="nav-link" href="/update_profile/{{session.id}}" data-bs-toggle="modal" data-bs-target="#modalprofile{{session.id}}">Update Profile</a></b>
+         </li>&nbsp;&nbsp;
+
+         
+        {% if session.id == 1 %}
+         <li class="nav-item">
+            <b><a class="nav-link" href="{{ url_for('swap_book') }}">Admin Swap Page</a></b>
+         </li>&nbsp;&nbsp;
+         {% else %}
+         <li class="nav-item">
+            <b><a class="nav-link" href="{{ url_for('swap_page') }}">Swapped Books</a></b>
+         </li>&nbsp;&nbsp;
+         {% endif %}
+         <li class="nav-item">
+            <b><a class="nav-link" href="{{url_for('logout')}}">Logout</a></b>
+        </li>
+     </ul>
+   </div>
+ </nav>
+
+ {% endif %}
+
+
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success" role="alert">
+                        {{message}}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+      
+
+      {% if session %}
+                    
+      
+      <div class="container">
+         <h4>Hello, {{session.username}}!</h4>
+         <p><nav class="nav">
+               <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</a>&nbsp;&nbsp;
+               <a class="btn btn-dark" href="{{url_for('show')}}">Show all Books</a>&nbsp;&nbsp;
+               {% for user in users %}
+                  {% if user.id == session.id and user.participation == 'yes' %}
+                  <li class="nav-item">
+                     <a class="btn btn-dark" href="/choose_book"  data-bs-toggle="modal" data-bs-target="#modalchoose">Choose book</a>
+                  </li>&nbsp;&nbsp;
+                  {% endif %}
+               {% endfor %}
+               
+
+                     <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalrequest">Requested Books</a>
+
+         </nav>
+         </p>
+     </div>
+
+     {% endif %}
+
+        <table class="table table-success table-striped table-hover" border="1">
+            <thead>
+                <tr>
+                    <!-- <th>ID</th> -->
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Summary</th>
+                    <th>Category</th>
+                    <th>Rating</th>
+                     <th colspan="1">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+
+                     {% if book.userid == session.id %}
+                    <tr>
+                        <!-- <td>{{book.id}}</td> -->
+                        <td>{{book.title}}</td>
+                        <td>{{book.author}}</td>
+                        <td>{{book.summary}}</td>
+                        <td>{{book.category}}</td>
+                        <td>{{book.rating}}</td>
+                        <!-- <td>{{book.image_link}}</td> -->
+                        <td>
+                           <a href="/update/{{book.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{book.id}}">Update</a>
+                           <a href="/delete/{{book.id}}" class="btn btn-danger" onclick="return confirm('Are you sure to delete ?')">Delete</a>
+                           <a class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalview{{book.id}}">View</a>
+                           
+                           <!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#choose_modal">Choose Book</button> -->
+
+                           
+
+                        </td>
+                    </tr>
+
+
+<!-- Meeting point -->
+<div id="meeting_modal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Meeting Point</h4>
+         </div>
+         <div class="modal-body ">
+            <p >
+               The book exchange will take place at a common meet point <b>every last saturday of the month.</b></br>
+               Meeting point: <b><u>Santa Clara Convention Centre at 9am</u></b>
+            </p>
+
+         </div>
+
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+         </div>
+
+      </div>
+   </div>
+
+</div> 
+
+
+<!-- update model -->
+ <div id="modaledit{{book.id}}" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Update Book</h4>
+         </div>
+         <div class="modal-body">
+
+            <form action="{{url_for('update')}}" method="POST">
+
+
+               <div class="form-group">
+                  <label>Title:</label>
+		           <input type="hidden"  name="id" value="{{book.id}}">
+                  <input type="text" class="form-control" name="title" value="{{book.title}}" >
+               </div>
+
+                <div class="form-group">
+                  <label>Author:</label>
+                  <input type="text" class="form-control" name="author" value="{{book.author}}">
+               </div>
+
+               <div class="form-group">
+                  <label>Summary:</label>
+                  <!-- <textarea class="form-control" id="summary" name="summary" rows="4" cols="50"  required="1"></textarea> -->
+                  <input type="text" class="form-control" name="summary" value="{{book.summary}}">
+               </div>
+
+                 <div class="form-group">
+                  <label>Category:</label>
+                  <select id="category" name="category" class="form-control" value="{{book.category}}">
+                     <option selected>{{book.category}}</option>
+                     <option value="fiction">Fiction</option>
+                     <option value="education">Education</option>
+                     <option value="mystery">Mystery</option>
+                     <option value="scifi">Science Fiction</option>
+                     <option value="history">History</option>
+                     <option value="romance">Romance</option>
+                     <option value="crime">Crime</option>
+                     <option value="comedy">Comedy</option>
+                   </select>
+                  <!-- <input type="text" class="form-control" name="category" > -->
+               </div>
+
+               <div class="form-group">
+                  <label>Rating:</label>
+                  <input type="text" class="form-control" name="rating" value="{{book.rating}}">
+               </div>
+
+               <!-- <div class="form-group">
+                  <label>Imafe Link:</label>
+                  <input type="text" class="form-control" name="image_link" value="{{book.image_link}}">
+               </div> -->
+
+               <div class="form-group">
+                  <button class="btn btn-primary mt-4" type="submit">Update Book</button>
+               </div>
+
+
+            </form>
+
+
+         </div>
+
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+         </div>
+
+
+      </div>
+
+
+   </div>
+
+
+</div>
+
+
+<!-- View Book model -->
+<div id="modalview{{book.id}}" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">{{book.title}}</h4>
+         </div>
+         <div class="modal-body" style="text-align: center;">
+
+               <div class="form-group">
+                  <!-- <label>Image:</label>  -->                  
+                 <img src="{{ url_for('get_image', title=book.title) }}" style="width: 450px; height: 200px;"/>
+               </div>
+
+
+                <div class="form-group">
+                  <label>Author:</label> {{book.author}}
+               </div>
+
+               <div class="form-group">
+                  <label>Summary:</label> {{book.summary}}
+                  <!-- <textarea class="form-control" id="summary" name="summary" rows="4" cols="50"  required="1"></textarea> -->
+               </div>
+
+                 <div class="form-group">
+                  <label>Category:</label> {{book.category}}
+                  
+               </div>
+
+               <div class="form-group">
+                  <label>Rating:</label> {{book.rating}}
+               </div>
+
+               
+
+
+
+         </div>
+
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+         </div>
+
+
+      </div>
+
+
+   </div>
+
+
+</div>
+
+      {% endif %}
+{% endfor %}
+
+
+<!-- Request book modal -->
+<div id="modalrequest" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Requested Books</h4>
+         </div>
+         <div class="modal-body" style="text-align: center;">
+
+            {% for req in reqs %}
+              {% if session.id == req.userid %}   
+
+               <div class="form-group">
+                  <label>Book:</label>  <b> {{req.title}}</b>  &nbsp;&nbsp;      Requested from: <b>{{req.book_owner}} </b>               
+               </div>
+
+
+
+               {% endif %}
+            {% endfor %}
+
+
+         </div>
+
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+         </div>
+
+
+      </div>
+
+
+   </div>
+
+
+</div>
+
+
+   <!-- choose book model -->
+   <div id="modalchoose" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h4 class="modal-title">Choose Book</h4>
+            </div>
+            <div class="modal-body">
+   
+               <form action="{{url_for('choose_book')}}" method="POST">
+   
+   
+
+
+                  <div class="form-group">
+                     <label>Choose from your books:  </label>
+                     
+                     <select class="form-control" name="bookid" id="bookid">                       
+                        <option selected>  </option>                        
+                        {% for book in books %}
+                              {% if book.userid == session.id %}
+                                 <option value="{{book.id}}">{{book.title}}</option>
+                              {% endif %}
+                        {% endfor %}
+                      </select>
+                     <!-- <input type="text" class="form-control" name="category" > -->
+                  </div>
+   
+
+   
+                  <div class="form-group">
+                     <button class="btn btn-primary mt-4" type="submit">Choose Book</button>
+                  </div>
+   
+   
+               </form>
+   
+   
+            </div>
+   
+   
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+   
+            </div>
+   
+   
+         </div>
+   
+   
+      </div>
+   
+   
+   </div>
+
+  
+
+                     
+            </tbody>
+        </table>
+    </div>
+
+
+
+<!-- Update Profile Modal -->
+{% for user in users %}
+
+    <div id="modalprofile{{session.id}}" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h4 class="modal-title">Update Profile</h4>
+            </div>
+            <div class="modal-body">
+   
+               <form action="{{url_for('update_profile')}}" method="POST">
+   
+                  <div class="form-group">
+                     
+                     <label>Username:</label>
+                    <input type="hidden"  name="id" value="{{user.id}}">
+                     <input type="text" class="form-control" name="username" value="{{user.username}}" >
+   
+                  </div>
+   
+   
+                   <div class="form-group">
+                     <label>Email:</label>
+                     <input type="email" class="form-control" name="email" value="{{user.email}}">
+                  </div>
+
+                  <div class="form-group">
+                     <label>City:</label>
+                     <select class="form-control" id="city" name="city" class="form-control">
+                        <option selected> {{user.city}}  </option>
+                        <option value="santa clara">Santa Clara, CA</option>
+                        <option value="sunnyvale">Sunnyvale, CA</option>
+                        <option value="san jose">San Jose, CA</option>
+                    </select>
+                  </div>
+                    
+   
+                  <div class="form-group">
+                     <label>Participation</label>
+                     <select class="form-control" id="participation" name="participation" value="{{user.participation}}">
+                        <option selected>{{user.participation}}</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                     <!-- <input type="text" class="form-control" name="image_lisnk" value="{{user.participation}}"> -->
+                  </div>
+   
+                  <div class="form-group">
+                     <button class="btn btn-primary mt-4" type="submit">Update Profile</button>
+                  </div>
+   
+               </form>
+   
+   
+            </div>
+   
+   
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+   
+            </div>
+   
+   
+         </div>
+   
+   
+      </div>
+   
+   
+   </div>
+
+{% endfor %}
+
+
+<!-- Modal  for inserting the book -->
+ <div id="insert_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+       <div class="modal-content">
+          <div class="modal-header">
+             <h4 class="modal-title">Add Book</h4>
+          </div>
+          <div class="modal-body">
+ 
+             <form action="{{url_for('insert_book')}}" method="POST" enctype="multipart/form-data">
+ 
+ 
+                <div class="form-group">
+                   <label>Title:</label>
+                   <input type="text" class="form-control" name="title" required="1">
+                </div>
+ 
+ 
+                 <div class="form-group">
+                   <label>Author:</label>
+                   <input type="text" class="form-control" name="author" required="1">
+                </div>
+ 
+                <div class="form-group">
+                  <label>Summary:</label>
+                  <input type="text" class="form-control" id="summary" name="summary" rows="4" cols="50" placeholder="Write a summary in your own words..." required="1">
+               </div>
+
+               <div class="form-group">
+                  <label>Category:</label>
+                  <select id="category" name="category" class="form-control" required="1">
+                    <option value="fiction">Fiction</option>
+                    <option value="education">Education</option>
+                    <option value="mystery">Mystery</option>
+                    <option value="scifi">Science Fiction</option>
+                    <option value="history">History</option>
+                    <option value="romance">Romance</option>
+                    <option value="crime">Crime</option>
+                    <option value="comedy">Comedy</option>
+                  </select>
+                  <!-- <input type="text" class="form-control" name="category" required="1"> -->
+               </div>
+
+               <div class="form-group">
+                  <label>Rating:</label>
+                  <input type="text" class="form-control" name="rating" placeholder="Out of 5..." required="1">
+               </div>
+
+                <!-- <div class="form-group">
+                  <label>Image Link:</label>
+                  <input type="text" class="form-control" name="image_link" required="1">
+               </div> -->
+
+               
+
+                <div class="form-group">
+                  <label>Please upload an image of the book:</label>
+                  <input type="file" name="pdf"  />
+               </div>
+ 
+                <div class="form-group">
+                   <button class="btn btn-primary mt-4" type="submit">Add Book</button>
+                </div>
+ 
+ 
+             </form>
+ 
+ 
+          </div>
+ 
+ 
+          <div class="modal-footer">
+             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+ 
+          </div>
+ 
+       </div>
+    </div>
+ 
+ </div>
+
+{% endblock %}
