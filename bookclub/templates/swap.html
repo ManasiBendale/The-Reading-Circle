@@ -22,7 +22,7 @@
       <b><a class="navbar-brand" href="{{url_for('index')}}">Home</a></b>
       <ul class="navbar-nav mr-auto">
  
-
+      
 
  
           <li class="nav-item">
@@ -32,62 +32,6 @@
     </div>
   </nav>
 
-  <!-- <script>
-    function updateTime() {
-    const timer = document.getElementById("timer");
-    const enableButton = document.getElementById("enableButton");
-    const container = document.querySelector(".w3-container");
-  
-    // Set the end date to 30 days from now
-    const endDate = new Date();
-    endDate.setDate(endDate.getDate() + 30);
-  
-    // Calculate the remaining time in milliseconds
-    const remainingTime = endDate.getTime() - new Date().getTime();
-  
-    // Convert remaining time to days, hours, minutes, and seconds
-    let remainingSeconds = Math.ceil(remainingTime / 1000);
-    const remainingMinutes = Math.floor(remainingSeconds / 60);
-    const remainingHours = Math.floor(remainingMinutes / 60);
-    const remainingDays = Math.floor(remainingHours / 24);
-  
-    // Calculate the remaining time as a string
-    const remainingTimeString = `${remainingDays}d ${remainingHours % 24}h ${remainingMinutes % 60}m ${remainingSeconds % 60}s`;
-  
-    // Update the timer element with the remaining time
-    timer.innerHTML = remainingTimeString;
-  
-    // Change background color of the container based on remaining time
-    if (remainingDays <= 5) {
-      container.style.backgroundColor = "red";
-    } else if (remainingDays <= 10) {
-      container.style.backgroundColor = "yellow";
-    } else {
-      container.style.backgroundColor = "green";
-    }
-  
-    // Enable the button after 30 days
-    if (remainingTime <= 0) {
-    }
-    
-    // Display countdown of hours, minutes, and seconds
-    const minutesString = `${(remainingMinutes % 60).toString().padStart(2, "0")}:`;
-    const secondsString = `${(remainingSeconds % 60).toString().padStart(2, "0")}`;
-    timer.innerHTML = `${hoursString}${minutesString}${secondsString}`;
-  
-    // Stop the timer when remaining time reaches 0
-    if (remainingTime <= 0) {
-      clearInterval(intervalId);
-      timer.innerHTML = `00:00:00 (0d 0h 0m 0s)`;
-    }
-  
-    remainingSeconds--;
-  } -->
-  
-  <!-- // Call the updateTime function every second
-  const intervalId = setInterval(updateTime, 1000); -->
-  
-  <!-- </script> -->
 
     <!-- Header -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
@@ -176,7 +120,31 @@
   </div>
 
 </div> 
+<!-- Meeting point -->
+<div id="meeting_modal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Meeting Point</h4>
+         </div>
+         <div class="modal-body ">
+            <p >
+               The book exchange will take place at a common meet point <b>every last saturday of the month.</b></br>
+               Meeting point: <b><u>Santa Clara Convention Centre at 9am</u></b>
+            </p>
 
+         </div>
+
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+         </div>
+
+      </div>
+   </div>
+
+</div> 
 <style>
   .jumbotron-sm {
   padding-top: 10px;

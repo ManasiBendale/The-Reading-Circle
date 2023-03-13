@@ -15,11 +15,17 @@ from jinja2 import Environment
 app = Flask(__name__)
 
 app.jinja_env.filters['zip'] = zip
-app.config['MYSQL_HOST'] = 'flaskdb.cviupmaskxl1.us-east-1.rds.amazonaws.com'
-app.config['MYSQL_USER'] = 'admin'
-app.config['MYSQL_PASSWORD'] = 'Sanjose$2023'
-app.config['MYSQL_DB'] = 'flaskaws'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:Sanjose$2023@flaskdb.cviupmaskxl1.us-east-1.rds.amazonaws.com:3306/flaskaws'
+# app.config['MYSQL_HOST'] = 'flaskdb.cviupmaskxl1.us-east-1.rds.amazonaws.com'
+# app.config['MYSQL_USER'] = 'admin'
+# app.config['MYSQL_PASSWORD'] = 'Sanjose$2023'
+# app.config['MYSQL_DB'] = 'flaskaws'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:Sanjose$2023@flaskdb.cviupmaskxl1.us-east-1.rds.amazonaws.com:3306/flaskaws'
+
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'test9'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test9'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "somethingunique"
@@ -52,6 +58,7 @@ class Book(db.Model):
     summary = db.Column(db.String(40), nullable=False)
     category = db.Column(db.String(100), nullable=False)
     rating = db.Column(db.String(100), nullable=False)
+    user_name = db.Column(db.String(100), nullable=False)
     image_link = db.Column(db.String(100), nullable=False)
     userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
@@ -226,7 +233,8 @@ def insert_book():
         s3_file_name = request.form.get('title')
         s3 = boto3.client('s3')
         try:
-            s3.put_object(Body=image_data, Bucket=bucket_name, Key=s3_file_name)
+            s3.put_object(Body=image_data, Bucket=bucket_name,
+                          Key=s3_file_name)
         except NoCredentialsError:
             flash("S3 credentials not available")
         book = Book(
@@ -250,6 +258,7 @@ def insert_book():
         db.session.commit()
         flash("Book added successfully")
         return redirect(url_for('index'))
+
 
 @app.route('/image')
 def get_image():
@@ -279,16 +288,16 @@ def request_book(id):
         title="Need to fill",
         book_requester=session['username'],
         book_owner="Need to fill",
-        bookid="Need to fill",
+        bookid=id,
         userid=session['id']
     )
     db.session.add(book)
     my_data = Book.query.get(id)
-    # new = my_data.title
-    # print(new)
+    usertable = Book.query.get(book.book_requester)
+
     book.title = my_data.title
     book.book_owner = my_data.user_name
-    book.bookid = my_data.id
+
     db.session.commit()
     flash("Book requested successfully!", "success")
     return redirect(url_for('index'))
@@ -364,120 +373,13 @@ def swap_book():
     swapped = set()
 
     for i, (swap_id, main_owner, new_owner, bookid, userid) in enumerate(records):
-        while (swap_id, shuffled_records[i][2]) in swapped or shuffled_records[i][2] == main_owner:
+        while (swap_id, shuffled_records[i][1]) in swapped or shuffled_records[i][1] == main_owner or shuffled_records[i][3] == new_owner:
             shuffled_records = random.sample(records, len(records))
         new_owner = shuffled_records[i][2]
         swapped.add((swap_id, new_owner))
         Swap.query.filter_by(id=swap_id).update({'new_owner': new_owner})
         db.session.commit()
-    # # Get all Swap objects from the database
-    # swaps = Swap.query.all()
-
-    # # Create a list of (id, main_owner, new_owner) tuples
-    # swap_data = [(swap.id, swap.main_owner, swap.new_owner) for swap in swaps]
-    # print("OG:", swap_data)
-    # # Shuffle the list of tuples
-    # random.shuffle(swap_data)
-
-    # swapped_owners = {}
-
-    # # Loop through the shuffled swap data tuples
-    # for i, (swap_id, main_owner, new_owner) in enumerate(swap_data):
-    #     # Get a new owner that is not the same as the main owner and has not been swapped before
-    #     new_new_owner = None
-    #     while not new_new_owner or new_new_owner == main_owner or (new_new_owner, main_owner) in swapped_owners.values():
-    #         new_new_owner = random.choice(
-    #             [swap[1] for swap in swap_data if swap[1] != main_owner and swap[0] != swap_id])
-    #     print("NEW OWNER--------------------------------------------------------:", new_new_owner)
-
-    #     # Swap the main_owner and new_owner values
-    #     Swap.query.filter_by(id=swap_id).update(
-    #         {'main_owner': new_owner, 'new_owner': new_new_owner})
-
-    #     # Add the swapped owners to the swapped_owners dictionary
-    #     swapped_owners[i] = (new_owner, new_new_owner)
-
-    # # Commit the changes to the database
-    # db.session.commit()
-
-    # Render the template with the swapped owners data
     return render_template('swap.html',  swaps=swaps)
-
-    # # Swap main_owner and new_owner values, avoiding repeats
-    # for i in range(len(swap_data)):
-    #     current_swap = swap_data[i]
-    #     print("Current Swap:", current_swap)
-    #     next_swap = swap_data[(i+1) % len(swap_data)]
-    #     print("Next Swap:", next_swap)
-
-    #     # Avoid repeating owners
-    #     while next_swap[1] == current_swap[2] or next_swap[2] == current_swap[1]:
-    #         random.shuffle(swap_data)
-    #         current_swap = swap_data[i]
-    #         print("Current Swap-------------------------:", current_swap)
-    #         next_swap = swap_data[(i+1) % len(swap_data)]
-    #         print("Next Swap-------------------------:", next_swap)
-
-    #     # Swap owners
-    #     current_swap = (current_swap[0], current_swap[2], current_swap[1])
-    #     next_swap = (next_swap[0], next_swap[2], next_swap[1])
-
-    #     # Update Swap objects in the database
-    #     Swap.query.filter_by(id=current_swap[0]).update(
-    #         {'main_owner': current_swap[1], 'new_owner': current_swap[2]})
-    #     Swap.query.filter_by(id=next_swap[0]).update(
-    #         {'main_owner': next_swap[1], 'new_owner': next_swap[2]})
-
-    # # Commit changes to the database
-    # db.session.commit()
-    # return render_template('swap.html')
-
-
-# @app.route('/swap_book/')
-# def swap_book():
-#     swaps = Swap.query.all()
-#     import random
-
-#     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-#     cursor.execute(
-#         'SELECT id, title, main_owner, new_owner, bookid, userid FROM swap')
-#     records1 = cursor.fetchall()
-#     keys = ['id', 'title', 'main_owner', 'new_owner', 'bookid', 'userid']
-#     l = [[row[key] for key in keys] for row in records1]
-#     print("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP", l)
-#     swapped_with = []
-
-#     def shuffle_records(records):
-#         shuffled_records = random.sample(records, len(records))
-#         return shuffled_records
-
-#     def book_swap(l):
-#         records = [(record[0], record[3], record[5], record[2])
-#                    for record in l]
-#         shuffled = shuffle_records(records)
-#         swapped = set()
-
-#         # swapped table
-#         for i, record in enumerate(l):
-#             # temp = record[3]
-#             # print("Previous owner : ", temp)
-#             while (record[0], shuffled[i][1]) in swapped or shuffled[i][1] == record[2] or shuffled[i][3] == record[3]:
-#                 random.shuffle(shuffled)
-
-#             print("shuffled[i][1]", shuffled[i][1])
-#             record[3] = shuffled[i][1]
-#             swapped.add((record[0], record[3]))
-#             swapped_with.append([record[0], record[3]])
-#             # print("qwertyuiopxcvbnm", [record[3], temp])
-#             # swapped_with.append([record[3], temp])
-#         return l, swapped_with
-
-#     l, swapped_books = book_swap(l)
-#     for i in range(0, len(l)-1):
-#         swaps[i].new_owner = swapped_books[i][1]
-
-#     db.session.commit()
-#     return render_template('swap.html', l=l, swapped_books=swapped_books, swaps=swaps)
 
 
 if __name__ == "__main__":

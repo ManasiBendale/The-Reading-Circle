@@ -16,11 +16,6 @@
          </li>&nbsp;&nbsp;
 
          
-         <li class="nav-item"> 
-            <b><a class="nav-link" href="/update_profile/{{session.id}}" data-bs-toggle="modal" data-bs-target="#modalprofile{{session.id}}">Update Profile</a></b>
-         </li>&nbsp;&nbsp;
-
-         
         {% if session.id == 1 %}
          <li class="nav-item">
             <b><a class="nav-link" href="{{ url_for('swap_book') }}">Admin Swap Page</a></b>
@@ -113,33 +108,6 @@
 
                         </td>
                     </tr>
-
-
-<!-- Meeting point -->
-<div id="meeting_modal" class="modal fade" role="dialog">
-   <div class="modal-dialog">
-      <div class="modal-content">
-         <div class="modal-header">
-            <h4 class="modal-title">Meeting Point</h4>
-         </div>
-         <div class="modal-body ">
-            <p >
-               The book exchange will take place at a common meet point <b>every last saturday of the month.</b></br>
-               Meeting point: <b><u>Santa Clara Convention Centre at 9am</u></b>
-            </p>
-
-         </div>
-
-
-         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-         </div>
-
-      </div>
-   </div>
-
-</div> 
 
 
 <!-- update model -->
@@ -280,6 +248,32 @@
       {% endif %}
 {% endfor %}
 
+
+<!-- Meeting point -->
+<div id="meeting_modal" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Meeting Point</h4>
+         </div>
+         <div class="modal-body ">
+            <p >
+               The book exchange will take place at a common meet point <b>every last saturday of the month.</b></br>
+               Meeting point: <b><u>Santa Clara Convention Centre at 9am</u></b>
+            </p>
+
+         </div>
+
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+         </div>
+
+      </div>
+   </div>
+
+</div> 
 
 <!-- Request book modal -->
 <div id="modalrequest" class="modal fade" role="dialog">
