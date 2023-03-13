@@ -9,6 +9,7 @@ from passlib.hash import sha256_crypt
 import base64
 import os
 import boto3
+import botocore
 from jinja2 import Environment
 
 app = Flask(__name__)
