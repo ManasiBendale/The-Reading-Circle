@@ -84,12 +84,6 @@ def main():
     return render_template('main.html')
 
 
-@app.route('/check_swap')
-def check_swap():
-    # books = Book.query.all()
-    return render_template('swap.html')
-
-
 @app.route('/request')
 def request_book():
     books = Book.query.all()
@@ -102,20 +96,24 @@ def request_book():
 def show():
     books = Book.query.all()
     users = User.query.all()
-    return render_template('show.html', books=books, users=users)
+    swaps = Swap.query.all()
+    return render_template('show.html', books=books, users=users, swaps=swaps)
 
 
 @app.route('/index')
 def index():
-    def b64encode(data):
-        return base64.b64encode(data).decode('utf-8')
-
-    env = Environment()
-    env.filters['b64encode'] = b64encode
     books = Book.query.all()
     users = User.query.all()
     swaps = Swap.query.all()
     return render_template('index.html', books=books, users=users, swaps=swaps)
+
+
+@app.route('/navbar')
+def navbar():
+    books = Book.query.all()
+    users = User.query.all()
+    swaps = Swap.query.all()
+    return render_template('navbar.html', books=books, users=users, swaps=swaps)
 
 
 # USER DETAILS--------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -209,10 +207,8 @@ def insert_book():
 
     if request.method == "POST":
         image_file = request.files['pdf']
-        # with open(pdf_file, 'rb') as f:
-        #     image_data = f.read()
         image_data = image_file.read()
-        # pdf_data_b64 = base64.b64encode(pdf_data).decode("utf-8")
+        pdf_data_b64 = base64.b64encode(image_data).decode("utf-8")
 
         book = Book(
             title=request.form.get('title'),
@@ -220,7 +216,7 @@ def insert_book():
             summary=request.form.get('summary'),
             category=request.form.get('category'),
             rating=request.form.get('rating'),
-            image_link=image_data,
+            image_link=pdf_data_b64,
             userid=session['id']
         )
         db.session.add(book)
@@ -246,14 +242,6 @@ def update():
         return redirect(url_for('index'))
 
 
-# @app.route('/view/', methods=['POST'])
-# def view_book():
-#     if request.method == "POST":
-#         # my_data = Book.query.get(request.form.get('id'))
-#         books = Book.query.all()
-#     return render_template('index.html', books=books)
-
-
 @app.route('/delete/<id>/', methods=['GET', 'POST'])
 def delete(id):
     my_data = Book.query.get(id)
@@ -262,6 +250,10 @@ def delete(id):
     flash("Book is deleted")
     return redirect(url_for('index'))
 
+# BOOK DETAILS-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# SWAP DETAILS----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 @app.route('/choose_book/', methods=['POST'])
 def choose_book():
@@ -276,21 +268,83 @@ def choose_book():
             userid=session['id']
         )
         db.session.add(book)
-        # my_data = Book.query.get('book.bookid')
-        # swapid = Swap.query.filter_by(bookid=3).first()
-        # swapbookid = swapid.bookid
-        # bookid = Book.query.filter_by(id=swapbookid).first()
-        # booktitle = bookid.title
-
-        # print(booktitle)
-        # print(bookid)
-        # book.title = my_data.title
+        booktitle = book.bookid
+        my_data = Book.query.get(booktitle)
+        new = my_data.title
+        print(new)
+        book.title = my_data.title
         db.session.commit()
         flash("Book chosen successfully!", "success")
         return redirect(url_for('index'))
 
 
-# BOOK DETAILS-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@app.route('/swap_page')
+def swap_page():
+    swaps = Swap.query.all()
+    return render_template('user_swap_page.html', swaps=swaps)
+
+
+@app.route('/swap_book/')
+def swap_book():
+    swaps = Swap.query.all()
+    import random
+    # records = Swap.query.all()
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute(
+        'SELECT id, title, main_owner, new_owner, bookid, userid FROM swap')
+    records1 = cursor.fetchall()
+    keys = ['id', 'title', 'main_owner', 'new_owner', 'bookid', 'userid']
+    l = [[row[key] for key in keys] for row in records1]
+
+    # print("OGGGGGGGGGGG==============================================",
+    #   l)
+
+    swapped_with = []
+    # print("RECORDS1:", records1[1]['new_owner'])
+
+    def shuffle_records(records):
+        shuffled_records = random.sample(records, len(records))
+        return shuffled_records
+
+    def book_swap(l):
+        records = [(record[0], record[3], record[5], record[2])
+                   for record in l]
+        shuffled = shuffle_records(records)
+        swapped = set()
+
+        # swapped table
+        for i, record in enumerate(l):
+            while (record[0], shuffled[i][1]) in swapped or shuffled[i][1] == record[2] or shuffled[i][3] == record[3]:
+                random.shuffle(shuffled)
+            record[3] = shuffled[i][1]
+            swapped.add((record[0], record[3]))
+            # print("Change=================================",
+            #       record[0], record[3])
+            swapped_with.append([record[0], record[3]])
+        return l, swapped_with
+
+    l, swapped_books = book_swap(l)
+
+    # my_data = Swap.query.get()
+    for i in range(0, len(l)-1):
+        swaps[i].new_owner = swapped_books[i][1]
+    # temp = swapped_books[i][1]
+    # records1[i]['new_owner'] = temp
+    # book = Swap(
+    #     new_owner=session['username']
+    # )
+    # my_data = Book.query.get(booktitle)
+    # swapid = Swap.query.filter_by(bookid=3).first()
+    # swapbookid = swapid.bookid
+    # bookid = Book.query.filter_by(id=swapbookid).first()
+    # new = my_data.title
+    # book.title = my_data.title
+    db.session.commit()
+    # print("L==============================================", l[0][3])
+    # print("L==============================================", swaps[0].id)
+
+    return render_template('swap.html', l=l, swapped_books=swapped_books, swaps=swaps)
+    # return
 
 
 if __name__ == "__main__":

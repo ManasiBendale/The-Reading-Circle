@@ -5,31 +5,35 @@
 
 
 {% block body %}
-<h3>
-    Hi {{session.username}}!</br> Welcome to the Book Exchange!
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+   <div class="container">
+     <b><a class="navbar-brand" href="{{url_for('index')}}">Home</a></b>
+     <ul class="navbar-nav mr-auto">
 
-</h3></br></br>
-{% if session %}
+         <li class="nav-item">
+            <b><a class="nav-link" href="/update_profile/{{session.id}}" data-bs-toggle="modal" data-bs-target="#modaledit{{session.id}}">Update Profile</a></b>
+         </li>
+         
+         
+        {% if session.id == 1 %}
+         <li class="nav-item">
+            <b><a class="nav-link" href="{{ url_for('swap_book') }}">Admin Swap Page</a></b>
+         </li>
+         {% else %}
+         <li class="nav-item">
+            <b><a class="nav-link" href="{{ url_for('swap_page') }}">Swapped Books</a></b>
+         </li>
+         {% endif %}
+         <li class="nav-item">
+            <b><a class="nav-link" href="{{url_for('logout')}}">Logout</a></b>
+        </li>
+     </ul>
+   </div>
+ </nav>
 
-<a href="{{ url_for('logout') }}" class="btn btn-success">Logout</a>
-<a class="btn btn-success" href="{{url_for('show')}}">Show all Books</a>
-<a href="/update_profile/{{session.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{session.id}}">Update Profile</a>
-<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</button>
 
-{% for user in users %}
-   {% if user.id == session.id and user.participation == 'yes' %}
-      <!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Check Swap Book Page</button> -->
-      <a href="{{ url_for('check_swap') }}" class="btn btn-success">Check Swap Book Page</a>
-   {% endif %}
-{% endfor %}
+</br>
 
-{% for swap in swaps %}
-   {% if swap.userid != session.id%}
-      <a href="/choose_book" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalchoose">Choose book</a>
-   {% endif %}
-{% endfor %}
-
-{% endif %}
 
     <div class="container mt-4">
         {% with messages = get_flashed_messages() %}
@@ -41,6 +45,28 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
+      
+
+      {% if session %}
+                    
+      
+      <div class="container">
+         <h4>Hello, {{session.username}}!</h4>
+         <p><nav class="nav">
+               <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</a>&nbsp;&nbsp;
+               <a class="btn btn-dark" href="{{url_for('show')}}">Show all Books</a>&nbsp;&nbsp;
+               {% for user in users %}
+                  {% if user.id == session.id and user.participation == 'yes' %}
+                  <li class="nav-item">
+                     <a class="btn btn-dark" href="/choose_book"  data-bs-toggle="modal" data-bs-target="#modalchoose">Choose book</a>
+                  </li>
+                  {% endif %}
+               {% endfor %}
+         </nav>
+         </p>
+     </div>
+
+     {% endif %}
 
         <table class="table table-success table-striped table-hover" border="1">
             <thead>
@@ -313,11 +339,17 @@
                      <label>Email:</label>
                      <input type="email" class="form-control" name="email" value="{{user.email}}">
                   </div>
-   
-                    <div class="form-group">
+
+                  <div class="form-group">
                      <label>City:</label>
-                     <input type="text" class="form-control" name="city" value="{{user.city}}">
+                     <select class="form-control" id="city" name="city" class="form-control">
+                        <option selected> {{user.city}}  </option>
+                        <option value="santa clara">Santa Clara, CA</option>
+                        <option value="sunnyvale">Sunnyvale, CA</option>
+                        <option value="san jose">San Jose, CA</option>
+                    </select>
                   </div>
+                    
    
                   <div class="form-group">
                      <label>Participation</label>

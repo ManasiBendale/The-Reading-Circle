@@ -2,20 +2,39 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
    <div class="container">
-     <a class="navbar-brand" href="{{url_for('index')}}">Home Page</a>
-     <ul class="navbar-nav">
-       <li class="nav-item">
-       <!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#signup_modal">Sign Up</button>
-       <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#login_modal">Login</button> -->
-       <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</button>
-       <a class="bottom" href="{{url_for('show')}}" class="btn btn-success">Show all Books</a>
-       <a href="/update_profile/{{session.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaledit{{user.id}}">Update Profile</a>
-       <!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#logout_modal" href="{{url_for('logout')}}"> -->
-         <a class="bottom" href="{{url_for('logout')}}" class="btn btn-success">Logout</a>       
-       </li>
+     <a class="navbar-brand" href="{{url_for('index')}}">Home</a>
+     <ul class="navbar-nav mr-auto">
+
+         <li class="nav-item">
+             <a class="nav-link" href="/update_profile/{{session.id}}" data-bs-toggle="modal" data-bs-target="#modaledit{{session.id}}">Update Profile</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="modal" data-bs-target="#insert_modal">Add Book</a>
+        </li>
+        <li class="nav-item">
+             <a class="nav-link" href="{{url_for('show')}}">Show all Books</a>
+         </li>
+         <li class="nav-item">
+            <b><a class="nav-link" href="{{url_for('logout')}}">Logout</a></b>
+        </li>
+
      </ul>
    </div>
  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% for book in books %}
  
 <!-- Modal  for inserting the book -->
 <div id="insert_modal" class="modal fade" role="dialog">
@@ -88,8 +107,10 @@
 
 </div>
 
- 
+{% endfor %} 
 
+
+{% for user in users %}
 <!-- update model -->
 <div id="modaledit{{session.id}}" class="modal fade" role="dialog">
    <div class="modal-dialog">
@@ -156,7 +177,7 @@
 
 </div>
 
-
+{% endfor %}
 
 
 <!-- Modal for Signing Up -->
