@@ -15,8 +15,8 @@ app.jinja_env.filters['zip'] = zip
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'test7'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test7'
+app.config['MYSQL_DB'] = 'test9'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test9'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "somethingunique"
@@ -50,9 +50,8 @@ class Book(db.Model):
     category = db.Column(db.String(100), nullable=False)
     rating = db.Column(db.String(100), nullable=False)
     image_link = db.Column(db.String(100), nullable=False)
+    user_name = db.Column(db.String(100), nullable=False)
     userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user_name = db.Column(db.String(100), db.ForeignKey(
-        'user.username'), nullable=False)
 
     def __init__(self, title, author, category, image_link, summary, rating, userid, user_name):
         self.title = title
@@ -327,6 +326,29 @@ def swap_page():
     return render_template('user_swap_page.html', swaps=swaps)
 
 
+# @app.route('/swap_book/')
+# def swap_book():
+
+#     swaps = Swap.query.all()
+#     records = [(swap.id, swap.main_owner, swap.new_owner,
+#                 swap.bookid, swap.userid) for swap in swaps]
+#     shuffled_records = random.sample(records, len(records))
+#     swapped = set()
+
+#     for i, (swap_id, main_owner, new_owner, bookid, userid) in enumerate(records):
+#         while (swap_id, shuffled_records[i][2]) in swapped or shuffled_records[i][2] == main_owner:
+#             shuffled_records = random.sample(records, len(records))
+#         new_owner = shuffled_records[i][2]
+#         swapped.add((swap_id, new_owner))
+#         Swap.query.filter_by(id=swap_id).update({'new_owner': new_owner})
+#         db.session.commit()
+
+#         # Update the records list with the new_owner value
+#         records[i] = (swap_id, main_owner, new_owner, bookid, userid)
+
+#     return render_template('swap.html', swaps=swaps)
+
+
 @app.route('/swap_book/')
 def swap_book():
 
@@ -337,12 +359,48 @@ def swap_book():
     swapped = set()
 
     for i, (swap_id, main_owner, new_owner, bookid, userid) in enumerate(records):
-        while (swap_id, shuffled_records[i][2]) in swapped or shuffled_records[i][2] == main_owner:
+        while (swap_id, shuffled_records[i][1]) in swapped or shuffled_records[i][1] == main_owner or shuffled_records[i][3] == new_owner:
             shuffled_records = random.sample(records, len(records))
         new_owner = shuffled_records[i][2]
         swapped.add((swap_id, new_owner))
         Swap.query.filter_by(id=swap_id).update({'new_owner': new_owner})
         db.session.commit()
+    return render_template('swap.html',  swaps=swaps)
+
+    # swaps = Swap.query.all()
+    # records = [(swap.id, swap.main_owner, swap.new_owner,
+    #             swap.bookid, swap.userid) for swap in swaps]
+    # shuffled_records = random.sample(records, len(records))
+    # swapped = set()
+
+    # for i, (swap_id, main_owner, new_owner, bookid, userid) in enumerate(records):
+    #     while (swap_id, shuffled_records[i][2]) in swapped or shuffled_records[i][2] == main_owner or shuffled_records[i][2] == None:
+    #         shuffled_records = random.sample(records, len(records))
+    #     new_owner = shuffled_records[i][2]
+    #     swapped.add((swap_id, new_owner))
+    #     Swap.query.filter_by(id=swap_id).update({'new_owner': new_owner})
+    #     db.session.commit()
+
+    #     # Update the records list with the new_owner value
+    #     records[i] = (swap_id, main_owner, new_owner, bookid, userid)
+
+    # return render_template('swap.html', swaps=swaps)
+
+    # swaps = Swap.query.all()
+    # records = [(swap.id, swap.main_owner, swap.new_owner,
+    #             swap.bookid, swap.userid) for swap in swaps]
+    # shuffled_records = random.sample(records, len(records))
+    # swapped = set()
+
+    # for i, (swap_id, main_owner, new_owner, bookid, userid) in enumerate(records):
+    #     while (swap_id, shuffled_records[i][2]) in swapped or shuffled_records[i][2] == main_owner:
+    #         shuffled_records = random.sample(records, len(records))
+    #     new_owner = shuffled_records[i][2]
+    #     swapped.add((swap_id, new_owner))
+    #     Swap.query.filter_by(id=swap_id).update({'new_owner': new_owner})
+    #     db.session.commit()
+    # return render_template('swap.html',  swaps=swaps)
+
     # # Get all Swap objects from the database
     # swaps = Swap.query.all()
 
@@ -374,7 +432,7 @@ def swap_book():
     # db.session.commit()
 
     # Render the template with the swapped owners data
-    return render_template('swap.html',  swaps=swaps)
+    # return render_template('swap.html',  swaps=swaps)
 
     # # Swap main_owner and new_owner values, avoiding repeats
     # for i in range(len(swap_data)):
