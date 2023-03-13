@@ -297,38 +297,52 @@ def swap_page():
 
 @app.route('/swap_book/')
 def swap_book():
-    # Get all Swap objects from the database
+
     swaps = Swap.query.all()
+    records = [(swap.id, swap.main_owner, swap.new_owner,
+                swap.bookid, swap.userid) for swap in swaps]
+    shuffled_records = random.sample(records, len(records))
+    swapped = set()
 
-    # Create a list of (id, main_owner, new_owner) tuples
-    swap_data = [(swap.id, swap.main_owner, swap.new_owner) for swap in swaps]
-    print("OG:", swap_data)
-    # Shuffle the list of tuples
-    random.shuffle(swap_data)
+    for i, (swap_id, main_owner, new_owner, book_id, user_id) in enumerate(records):
+        while (swap_id, shuffled_records[i][2]) in swapped or shuffled_records[i][2] == main_owner:
+            shuffled_records = random.sample(records, len(records))
+        new_owner = shuffled_records[i][2]
+        swapped.add((swap_id, new_owner))
+        Swap.query.filter_by(id=swap_id).update({'new_owner': new_owner})
+        db.session.commit()
+    # # Get all Swap objects from the database
+    # swaps = Swap.query.all()
 
-    swapped_owners = {}
+    # # Create a list of (id, main_owner, new_owner) tuples
+    # swap_data = [(swap.id, swap.main_owner, swap.new_owner) for swap in swaps]
+    # print("OG:", swap_data)
+    # # Shuffle the list of tuples
+    # random.shuffle(swap_data)
 
-    # Loop through the shuffled swap data tuples
-    for i, (swap_id, main_owner, new_owner) in enumerate(swap_data):
-        # Get a new owner that is not the same as the main owner and has not been swapped before
-        new_new_owner = None
-        while not new_new_owner or new_new_owner == main_owner or (new_new_owner, main_owner) in swapped_owners.values():
-            new_new_owner = random.choice(
-                [swap[1] for swap in swap_data if swap[1] != main_owner and swap[0] != swap_id])
-        print("NEW OWNER--------------------------------------------------------:", new_new_owner)
+    # swapped_owners = {}
 
-        # Swap the main_owner and new_owner values
-        Swap.query.filter_by(id=swap_id).update(
-            {'main_owner': new_owner, 'new_owner': new_new_owner})
+    # # Loop through the shuffled swap data tuples
+    # for i, (swap_id, main_owner, new_owner) in enumerate(swap_data):
+    #     # Get a new owner that is not the same as the main owner and has not been swapped before
+    #     new_new_owner = None
+    #     while not new_new_owner or new_new_owner == main_owner or (new_new_owner, main_owner) in swapped_owners.values():
+    #         new_new_owner = random.choice(
+    #             [swap[1] for swap in swap_data if swap[1] != main_owner and swap[0] != swap_id])
+    #     print("NEW OWNER--------------------------------------------------------:", new_new_owner)
 
-        # Add the swapped owners to the swapped_owners dictionary
-        swapped_owners[i] = (new_owner, new_new_owner)
+    #     # Swap the main_owner and new_owner values
+    #     Swap.query.filter_by(id=swap_id).update(
+    #         {'main_owner': new_owner, 'new_owner': new_new_owner})
 
-    # Commit the changes to the database
-    db.session.commit()
+    #     # Add the swapped owners to the swapped_owners dictionary
+    #     swapped_owners[i] = (new_owner, new_new_owner)
+
+    # # Commit the changes to the database
+    # db.session.commit()
 
     # Render the template with the swapped owners data
-    return render_template('swap.html', swapped_owners=swapped_owners)
+    return render_template('swap.html',  swaps=swaps)
 
     # # Swap main_owner and new_owner values, avoiding repeats
     # for i in range(len(swap_data)):
