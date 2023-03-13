@@ -65,9 +65,13 @@
                   {% if user.id == session.id and user.participation == 'yes' %}
                   <li class="nav-item">
                      <a class="btn btn-dark" href="/choose_book"  data-bs-toggle="modal" data-bs-target="#modalchoose">Choose book</a>
-                  </li>
+                  </li>&nbsp;&nbsp;
                   {% endif %}
                {% endfor %}
+               
+
+                     <a class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalrequest">Requested Books</a>
+
          </nav>
          </p>
      </div>
@@ -105,9 +109,8 @@
                            
                            <!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#choose_modal">Choose Book</button> -->
 
-                           {% if session.participation == 'yes' %}
-                              <a href="/choose_book/{{book.id}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalchoose{{book.id}}">Choose book</a>
-                           {% endif %}
+                           
+
                         </td>
                     </tr>
 
@@ -278,6 +281,44 @@
 {% endfor %}
 
 
+<!-- Request book modal -->
+<div id="modalrequest" class="modal fade" role="dialog">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title">Requested Books</h4>
+         </div>
+         <div class="modal-body" style="text-align: center;">
+
+            {% for req in reqs %}
+              {% if session.id == req.userid %}   
+
+               <div class="form-group">
+                  <label>Book:</label>  <b> {{req.title}}</b>  &nbsp;&nbsp;      Requested from: <b>{{req.book_owner}} </b>               
+               </div>
+
+
+
+               {% endif %}
+            {% endfor %}
+
+
+         </div>
+
+
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+         </div>
+
+
+      </div>
+
+
+   </div>
+
+
+</div>
 
 
    <!-- choose book model -->

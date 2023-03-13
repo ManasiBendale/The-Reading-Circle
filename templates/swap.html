@@ -1,6 +1,6 @@
-<html>
-<head>
-<title>Swap Book</title>
+{% extends 'base.html' %}
+{% block body %}
+
         <!-- Link allow you to use python with HTML -->
         <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
         <script defer src="https://pyscript.net/alpha/pyscript.js"></script> 
@@ -8,17 +8,31 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
-<style>
+<!-- <style>
     .container {
         background-color: black;
         color: white;
     }
 
-</style>
-</head>
-<body>
+</style> -->
 
-  <script>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <b><a class="navbar-brand" href="{{url_for('index')}}">Home</a></b>
+      <ul class="navbar-nav mr-auto">
+ 
+
+
+ 
+          <li class="nav-item">
+             <b><a class="nav-link" href="{{url_for('logout')}}">Logout</a></b>
+         </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- <script>
     function updateTime() {
     const timer = document.getElementById("timer");
     const enableButton = document.getElementById("enableButton");
@@ -68,38 +82,38 @@
     }
   
     remainingSeconds--;
-  }
+  } -->
   
-  // Call the updateTime function every second
-  const intervalId = setInterval(updateTime, 1000);
+  <!-- // Call the updateTime function every second
+  const intervalId = setInterval(updateTime, 1000); -->
   
-  </script>
+  <!-- </script> -->
 
     <!-- Header -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
-    <div class="jumbotron">
+    <div class="jumbotron jumbotron-sm">
         <div class="container">
             <div class="row d-flex justify-content-center">
-                <div class="col-xs-3">
-                    <!-- <img class="img-responsive" src="logo.jpeg" alt="Book Logo"> -->
-                </div>
-                <div class="col-xs-7">
+
+                <div class="col-xs-9">
                     <h1>The Reading Circle</h1>
                     <p>Experience the joy of reading with The Reading Circle - where every book is a new adventure!</p>
                 </div>
             </div>
         </div>
     </div>
+  </br>
+
 
     <div class="w3-row-padding w3-content" style="max-width:1400px; display: flex; justify-content: center;">
       <div class="w3-twothird">
         <!-- Timer bar -->
           <div class="w3-row-padding w3-content w3-card-4" style="max-width:1400px">
             <div class="w3-container w3-animate-zoom w3-left-align">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
+              <!-- <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h3>Time remaining: <span id="timer"></span></h3>
                 <button class="btn btn-primary" id="enableButton" disabled>Enable after 30 days</button>
-              </div>
+              </div> -->
             </div>
           </div>
         <table class=" table w3-table w3-striped w3-border w3-hoverable w3-card-4">
@@ -136,8 +150,47 @@
 
 
 
-      </div>      
-</body>
-</html>
-</body>
-</html>
+      </div>  
+<!-- Meeting point -->
+<div id="meeting_modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+     <div class="modal-content">
+        <div class="modal-header">
+           <h4 class="modal-title">Meeting Point</h4>
+        </div>
+        <div class="modal-body ">
+           <p>
+              The book exchange will take place at a common meet point <b>every last saturday of the month.</b></br>
+              Meeting point: <b><u>Santa Clara Convention Centre at 9am</u></b>
+           </p>
+
+        </div>
+
+
+        <div class="modal-footer">
+           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+        </div>
+
+     </div>
+  </div>
+
+</div> 
+
+<style>
+  .jumbotron-sm {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 0px;
+}
+
+.jumbotron-sm h1 {
+  font-size: 24px;
+}
+
+.jumbotron-sm p {
+  font-size: 14px;
+}
+</style>
+
+{% endblock %}

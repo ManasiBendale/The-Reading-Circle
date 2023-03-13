@@ -15,8 +15,8 @@ app.jinja_env.filters['zip'] = zip
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'test5'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test5'
+app.config['MYSQL_DB'] = 'test7'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test7'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "somethingunique"
@@ -81,19 +81,27 @@ class Swap(db.Model):
         self.userid = userid
 
 
+class Request(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    book_requester = db.Column(db.String(100), nullable=False)
+    book_owner = db.Column(db.String(100), nullable=False)
+    bookid = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
+    userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __init__(self, title, book_requester, book_owner, bookid, userid):
+        self.title = title
+        self.book_requester = book_requester
+        self.book_owner = book_owner
+        self.bookid = bookid
+        self.userid = userid
+
+
 @app.route('/')
 @app.route('/main')
 def main():
     # books = Book.query.all()
     return render_template('main.html')
-
-
-@app.route('/request')
-def request_book():
-    books = Book.query.all()
-    users = User.query.all()
-    flash("You have successfully requested this book!", "success")
-    return render_template('index.html', books=books, users=users)
 
 
 @app.route('/show')
@@ -109,7 +117,8 @@ def index():
     books = Book.query.all()
     users = User.query.all()
     swaps = Swap.query.all()
-    return render_template('index.html', books=books, users=users, swaps=swaps)
+    reqs = Request.query.all()
+    return render_template('index.html', books=books, users=users, swaps=swaps, reqs=reqs)
 
 
 @app.route('/navbar')
@@ -236,6 +245,28 @@ def insert_book():
         return redirect(url_for('index'))
 
 
+@app.route('/request_book/<id>/', methods=['GET', 'POST'])
+def request_book(id):
+
+    book = Request(
+        title="Need to fill",
+        book_requester=session['username'],
+        book_owner="Need to fill",
+        bookid="Need to fill",
+        userid=session['id']
+    )
+    db.session.add(book)
+    my_data = Book.query.get(id)
+    # new = my_data.title
+    # print(new)
+    book.title = my_data.title
+    book.book_owner = my_data.user_name
+    book.bookid = my_data.id
+    db.session.commit()
+    flash("Book requested successfully!", "success")
+    return redirect(url_for('index'))
+
+
 @app.route('/update/', methods=['POST'])
 def update():
     if request.method == "POST":
@@ -261,10 +292,6 @@ def delete(id):
     flash("Book is deleted")
     return redirect(url_for('index'))
 
-# BOOK DETAILS-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-# SWAP DETAILS----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 @app.route('/choose_book/', methods=['POST'])
 def choose_book():
@@ -288,6 +315,11 @@ def choose_book():
         flash("Book chosen successfully!", "success")
         return redirect(url_for('index'))
 
+# BOOK DETAILS-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# SWAP DETAILS----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 @app.route('/swap_page')
 def swap_page():
@@ -304,7 +336,7 @@ def swap_book():
     shuffled_records = random.sample(records, len(records))
     swapped = set()
 
-    for i, (swap_id, main_owner, new_owner, book_id, user_id) in enumerate(records):
+    for i, (swap_id, main_owner, new_owner, bookid, userid) in enumerate(records):
         while (swap_id, shuffled_records[i][2]) in swapped or shuffled_records[i][2] == main_owner:
             shuffled_records = random.sample(records, len(records))
         new_owner = shuffled_records[i][2]
