@@ -286,21 +286,16 @@ def swap_page():
 
 @app.route('/swap_book/')
 def swap_book():
-    swaps = Swap.query.all()
     import random
-    # records = Swap.query.all()
+    swaps = Swap.query.all()
+    swapped_with = []
+
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute(
         'SELECT id, title, main_owner, new_owner, bookid, userid FROM swap')
     records1 = cursor.fetchall()
     keys = ['id', 'title', 'main_owner', 'new_owner', 'bookid', 'userid']
     l = [[row[key] for key in keys] for row in records1]
-
-    # print("OGGGGGGGGGGG==============================================",
-    #   l)
-
-    swapped_with = []
-    # print("RECORDS1:", records1[1]['new_owner'])
 
     def shuffle_records(records):
         shuffled_records = random.sample(records, len(records))
@@ -314,38 +309,87 @@ def swap_book():
 
         # swapped table
         for i, record in enumerate(l):
+            temp = record[3]
+            # print("Previous owner : ",temp)
             while (record[0], shuffled[i][1]) in swapped or shuffled[i][1] == record[2] or shuffled[i][3] == record[3]:
                 random.shuffle(shuffled)
+            print("shuffled[i][1]", shuffled[i][1])
             record[3] = shuffled[i][1]
             swapped.add((record[0], record[3]))
-            # print("Change=================================",
-            #       record[0], record[3])
-            swapped_with.append([record[0], record[3]])
+            # print([record[3],temp])
+            swapped_with.append([record[3], temp])
         return l, swapped_with
 
     l, swapped_books = book_swap(l)
 
-    # my_data = Swap.query.get()
-    for i in range(0, len(l)-1):
-        swaps[i].new_owner = swapped_books[i][1]
-    # temp = swapped_books[i][1]
-    # records1[i]['new_owner'] = temp
-    # book = Swap(
-    #     new_owner=session['username']
-    # )
-    # my_data = Book.query.get(booktitle)
-    # swapid = Swap.query.filter_by(bookid=3).first()
-    # swapbookid = swapid.bookid
-    # bookid = Book.query.filter_by(id=swapbookid).first()
-    # new = my_data.title
-    # book.title = my_data.title
-    db.session.commit()
-    # print("L==============================================", l[0][3])
-    # print("L==============================================", swaps[0].id)
-
     return render_template('swap.html', l=l, swapped_books=swapped_books, swaps=swaps)
+
+
+# @app.route('/swap_book/')
+# def swap_book():
+
+#     swaps = Swap.query.all()
+#     import random
+#     # records = Swap.query.all()
+
+#     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+#     cursor.execute(
+#         'SELECT id, title, main_owner, new_owner, bookid, userid FROM swap')
+#     records1 = cursor.fetchall()
+#     keys = ['id', 'title', 'main_owner', 'new_owner', 'bookid', 'userid']
+#     l = [[row[key] for key in keys] for row in records1]
+
+#     print("OGGGGGGGGGGG==============================================",
+#           l)
+
+#     swapped_with = []
+#     # print("RECORDS1:", records1[1]['new_owner'])
+
+#     def shuffle_records(records):
+#         shuffled_records = random.sample(records, len(records))
+#         return shuffled_records
+
+#     def book_swap(l):
+#         records = [(record[0], record[3], record[5], record[2])
+#                    for record in l]
+#         shuffled = shuffle_records(records)
+#         swapped = set()
+
+#         # swapped table
+#         for i, record in enumerate(l):
+#             temp = record[3]
+#             while (record[0], shuffled[i][1]) in swapped or shuffled[i][1] == record[2] or shuffled[i][3] == record[3]:
+#                 random.shuffle(shuffled)
+#             record[3] = shuffled[i][1]
+#             swapped.add((record[0], record[3]))
+#             print("Change=================================",
+#                   record[0], record[3])
+#             swapped_with.append([temp, record[3]])
+#             # swapped_with.append([record[0], record[3]])
+#         return l, swapped_with
+
+#     l, swapped_books = book_swap(l)
+
+#     # my_data = Swap.query.get()
+#     for i in range(0, len(l)-1):
+#         swaps[i].new_owner = swapped_books[i][1]
+#     # temp = swapped_books[i][1]
+#     # records1[i]['new_owner'] = temp
+#     # book = Swap(
+#     #     new_owner=session['username']
+#     # )
+#     # my_data = Book.query.get(booktitle)
+#     # swapid = Swap.query.filter_by(bookid=3).first()
+#     # swapbookid = swapid.bookid
+#     # bookid = Book.query.filter_by(id=swapbookid).first()
+#     # new = my_data.title
+#     # book.title = my_data.title
+#     db.session.commit()
+#     print("qwertyuiop==============================================",
+#           swapped_books)
+#     print("L==============================================", swaps[0].id)
+
+#     return render_template('swap.html', l=l, swapped_books=swapped_books, swaps=swaps)
     # return
-
-
 if __name__ == "__main__":
     app.run(debug=True)
