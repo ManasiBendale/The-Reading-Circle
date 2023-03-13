@@ -19,46 +19,47 @@
 
 <html>
 	<head>
-		<meta charset="UTF-8">
-		<title> Register </title>
-		<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">			 -->
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="style.css">
+	<title> Login </title>
+	<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">			 -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	</head>
 	<body>
 		<!-- Modal for Signing Up -->
 		<div>
 			<div>
 			   <div>
-				  <div>
-					 <h4 class="modal-title">Login</h4>
-				  </div>
-				  <div class="modal-body">
+				  
+				  <div class="modal-body" style="display:inline-block; margin-top: 90px;">
 		 
 					 <form action="{{url_for('login')}}" method="POST">
 		 
-		 
-						<div class="form-group">
-						   <label>Username:</label>
-						   <input id="username" type="text" class="form-control" name="username" required="1">
+						<div>
+							<h4 class="modal-title" style="color: black; margin-top: 10px;">Login</h4>
+						 </div>
+
+						<div class="form-group" >
+						   <label style="color: black; margin-top: 35px; font-size: 20px; margin-bottom: 15px;">Username:</label>
+						   <input id="username" type="text" class="form-control" name="username" required="1" style="width:200px;display:block; margin-left: 80px;">
 						</div>
 		 
 		 
 						  <div class="form-group">
-						   <label>Password:</label>
-						   <input id="password" type="password" class="form-control" name="password" required="1">
+						   <label style="color: black; font-size: 20px; margin-bottom: 15px;">Password:</label>
+						   <input id="password" type="password" class="form-control" name="password" required="1" style="width:200px;display:block; margin-left: 80px;">
 						</div>
-						<b></b>
+					</br>
 
-						<p class="bottom">Don't have an account? <a class="bottom" href="{{url_for('register')}}"> Sign Up here</a></p>
+						<p class="bottom" style="color: black;">Don't have an account? <a class="bottom" href="{{url_for('register')}}"> Sign Up here</a></p>
 		 
 		 
 						<div class="form-group">
-						   <button class="btn btn-primary mt-4" type="submit">Login</button>
+							<button class="btn btn-primary mt-4 btn2" type="submit">Login</button>
+							<a href="{{url_for('main')}}" class="btn btn-primary mt-4 btn2">Home Page</a>
 						</div>
-
-						<div class="modal-footer">
-							<a href="{{url_for('main')}}" class="btn btn-secondary">Back to Main Page</a>
-				
-						 </div>
 		 
 					 </form>
 		 
@@ -73,9 +74,50 @@
 			</div>
 		 
 		 </div>
-
+		 <script src="jQuery.js"></script>
 	</body>
 </html>
+
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	body {
+		font-family: Arial, Helvetica, sans-serif;
+		background-image: url(/static/lib.jpeg);
+		background-size: cover;
+		background-attachment: fixed;
+		text-align: center;
+	}
+
+	.modal-body {
+		width: 350px;
+		height: 420px;
+		background-color: rgba(242, 234, 234, 0.935);
+		/* box-shadow: 0 5px 30px black; */
+	}
+
+	.btn2 {
+		padding: 10px;
+		width: 150px;
+		border-radius: 20px;
+		background-color: rgb(10, 136, 43);
+		border-style: none;
+		color: white;
+		font-weight: 600;
+	}
+
+	.btn2:hover {
+		background-color: rgba(10, 136, 43, 0.5);
+	}
+
+	.btn button:hover {
+		border-bottom: 2px solid rgb(91, 243, 131);
+	}
+</style>
 
 
 {% endblock %}

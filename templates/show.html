@@ -62,74 +62,70 @@
                     <th>Summary</th>
                     <th>Category</th>
                     <th>Rating</th>
+                    <th>Owner of the book</th>
                     <!-- <th>Current Owner</th> -->
                      <th colspan="2">Actions</th>
                 </tr>
             </thead>
             <tbody>
                {% for book in books %}
-                  
+                  {% if book.userid != session.id %}
                    <tr>
                         <td>{{book.title}}</td>
                         <td>{{book.author}}</td>
                         <td>{{book.summary}}</td>
                         <td>{{book.category}}</td>
                         <td>{{book.rating}}</td>
+                        <td>{{book.user_name}}</td>
                
                         
                         <td>
                
-                           <a href="#" class="btn btn-success">View</a>
-
-                             <a href="/request" class="btn btn-danger" onclick="return confirm('Are you sure you to request this book?')">Request</a>
+                            <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalview{{book.id}}">View</a>
+                            <a href="/request" class="btn btn-danger" onclick="return confirm('Are you sure you to request this book?')">Request</a>
 
                         </td>
                     </tr>
 
-
-                {% endfor %}   
+                      
             </tbody>
 
 
 
-<!-- choose book model -->
-<div id="modalchoose" class="modal fade" role="dialog">
+<!-- View Book model -->
+<div id="modalview{{book.id}}" class="modal fade" role="dialog">
     <div class="modal-dialog">
        <div class="modal-content">
           <div class="modal-header">
-             <h4 class="modal-title">Choose Book</h4>
+             <h4 class="modal-title">{{book.title}}</h4>
           </div>
-          <div class="modal-body">
+          <div class="modal-body" style="text-align: center;">
  
-             <form action="{{url_for('choose_book')}}" method="POST">
- 
- 
-
-
                 <div class="form-group">
-                   <label>Choose from your books:  </label>
+                   <!-- <label>Image:</label>  -->                  
+                   <img src="data:image/jpeg;base64,{{ book.image_link }}" />
+                </div>
+ 
+ 
+                 <div class="form-group">
+                   <label>Author:</label> {{book.author}}
+                </div>
+ 
+                <div class="form-group">
+                   <label>Summary:</label> {{book.summary}}
+                   <!-- <textarea class="form-control" id="summary" name="summary" rows="4" cols="50"  required="1"></textarea> -->
+                </div>
+ 
+                  <div class="form-group">
+                   <label>Category:</label> {{book.category}}
                    
-                   <select class="form-control" name="bookid" id="bookid">                       
-                      <option selected>  </option>                        
-                      {% for book in books %}
-                            {% if book.userid == session.id %}
-                               <option value="{{book.id}}">{{book.title}}</option>
-                            {% endif %}
-                      {% endfor %}
-                    </select>
-                   <!-- <input type="text" class="form-control" name="category" > -->
                 </div>
- 
-
  
                 <div class="form-group">
-                   <button class="btn btn-primary mt-4" type="submit">Choose Book</button>
+                   <label>Rating:</label> {{book.rating}}
                 </div>
  
- 
-             </form>
- 
- 
+  
           </div>
  
  
@@ -138,21 +134,23 @@
  
           </div>
  
- 
        </div>
- 
- 
+
     </div>
- 
- 
+
  </div>
 
 
+    {% endif %}
+{% endfor %} 
 
-                   
-          </tbody>
+
       </table>
   </div>
+
+
+
+ 
 
 
 
