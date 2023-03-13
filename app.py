@@ -12,11 +12,11 @@ from jinja2 import Environment
 app = Flask(__name__)
 
 app.jinja_env.filters['zip'] = zip
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'test7'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test7'
+app.config['MYSQL_HOST'] = 'flaskdb.cviupmaskxl1.us-east-1.rds.amazonaws.com'
+app.config['MYSQL_USER'] = 'admin'
+app.config['MYSQL_PASSWORD'] = 'Sanjose$2023'
+app.config['MYSQL_DB'] = 'flaskaws'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:Sanjose$2023@flaskdb.cviupmaskxl1.us-east-1.rds.amazonaws.com:3306/flaskaws'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "somethingunique"
@@ -51,8 +51,6 @@ class Book(db.Model):
     rating = db.Column(db.String(100), nullable=False)
     image_link = db.Column(db.String(100), nullable=False)
     userid = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    user_name = db.Column(db.String(100), db.ForeignKey(
-        'user.username'), nullable=False)
 
     def __init__(self, title, author, category, image_link, summary, rating, userid, user_name):
         self.title = title
