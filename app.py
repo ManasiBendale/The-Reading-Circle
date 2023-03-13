@@ -1,21 +1,23 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, Response
+from flask_mysqldb import MySQL
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
-from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
 from passlib.hash import sha256_crypt
 import base64
+import os
+import boto3
 from jinja2 import Environment
 
 app = Flask(__name__)
-
+FLASK_APP = app
 app.jinja_env.filters['zip'] = zip
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'test3'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/test3'
+app.config['MYSQL_HOST'] = 'flaskdb.ccmebdkxgfmf.us-west-1.rds.amazonaws.com'
+app.config['MYSQL_USER'] = 'admin'
+app.config['MYSQL_PASSWORD'] = 'Sanjose$2023'
+app.config['MYSQL_DB'] = 'flaskaws'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://admin:Sanjose$2023@flaskdb.ccmebdkxgfmf.us-west-1.rds.amazonaws.com/flaskaws'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "somethingunique"
@@ -209,18 +211,21 @@ def insert_book():
 
     if request.method == "POST":
         image_file = request.files['pdf']
-        # with open(pdf_file, 'rb') as f:
-        #     image_data = f.read()
-        image_data = image_file.read()
-        # pdf_data_b64 = base64.b64encode(pdf_data).decode("utf-8")
-
+        pdf_data = image_file.read()
+        bucket_name = 'bookclub-imagestore'
+        s3_file_name = request.form.get('title')
+        s3 = boto3.client('s3')
+        try:
+            s3.put_object(Body=pdf_data, Bucket=bucket_name, Key=s3_file_name)
+        except NoCredentialsError:
+            flash("S3 credentials not available")
         book = Book(
             title=request.form.get('title'),
             author=request.form.get('author'),
             summary=request.form.get('summary'),
             category=request.form.get('category'),
             rating=request.form.get('rating'),
-            image_link=image_data,
+            image_link=pdf_data,
             userid=session['id']
         )
         db.session.add(book)
@@ -228,6 +233,25 @@ def insert_book():
         flash("Book added successfully")
         return redirect(url_for('index'))
 
+@app.route('/image')
+def get_image():
+
+    bucket_name = 'bookclub-imagestore'
+    s3 = boto3.resource('s3')
+    title = request.args.get('title')
+    image_name = title
+    object = s3.Object(bucket_name, image_name)
+    try:
+        response = object.get()
+        image_data = response['Body'].read()
+        content_type = response['ContentType']
+        return Response(image_data, mimetype=content_type)
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "NoSuchKey":
+            return "Image not found", 404
+        else:
+            return "Error", 500
+        flash("Book uploaded successfully")
 
 @app.route('/update/', methods=['POST'])
 def update():
